@@ -29,7 +29,7 @@ export const chestPainCase: CaseStudy = {
       'Metoprolol succinate 50 mg PO daily',
       'Amlodipine 5 mg PO daily',
       'Atorvastatin 20 mg PO nightly',
-      'Sildenafil (Viagra) — taken yesterday evening',
+      'Sildenafil (Viagra) — taken ~18 hours ago (within 24-hour nitroglycerin contraindication window)',
     ],
     medicalHistory: ['Hypertension', 'Hyperlipidemia', 'Active smoker (1 ppd × 20 years)', 'Menopause (3 years ago)'],
     chiefComplaint: 'Crushing substernal chest pain 8/10, radiating to left jaw and arm × 45 minutes, with diaphoresis and nausea',

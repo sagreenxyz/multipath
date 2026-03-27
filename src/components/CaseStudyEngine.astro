@@ -719,7 +719,8 @@ function handleChoice(scene: Scene, choice: Choice) {
     chosenBtn.classList.add(choice.isCorrect ? 'border-emerald-400 bg-emerald-50' : 'border-red-300 bg-red-50');
   }
 
-  // Award points
+  // Award points; individual choices may carry negative points (penalties for poor decisions),
+  // but the cumulative display score is floored at 0 to avoid discouraging learners.
   currentScore = Math.max(0, currentScore + choice.points);
   updateScoreDisplay();
 
