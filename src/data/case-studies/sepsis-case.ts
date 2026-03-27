@@ -5,7 +5,7 @@ export const sepsisCase: CaseStudy = {
   title: 'A Cascade of Complications',
   subtitle: 'Sepsis in an Elderly Patient',
   description:
-    'An 68-year-old male presents to the medical-surgical floor transferred from the emergency department with fever, confusion, and suspected urinary tract infection. You are the admitting nurse. Your assessment and interventions in the next few hours are critical.',
+    'A 68-year-old male presents to the medical-surgical floor transferred from the emergency department with fever, confusion, and suspected urinary tract infection. You are the admitting nurse. Your assessment and interventions in the next few hours are critical.',
   difficulty: 'intermediate',
   specialty: 'Medical-Surgical / Critical Care',
   tags: ['sepsis', 'elderly', 'UTI', 'SBAR', 'sepsis bundle', 'critical thinking'],
