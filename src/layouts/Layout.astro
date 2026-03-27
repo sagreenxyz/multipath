@@ -1,0 +1,155 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  fullWidth?: boolean;
+}
+
+const { title, description = 'Nursing Case Study Training Platform', fullWidth = false } = Astro.props;
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title} — NurseCase</title>
+  </head>
+  <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <!-- Header / Navigation -->
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo / Brand -->
+          <a href="/" class="flex items-center gap-3 group">
+            <div
+              class="w-9 h-9 rounded-lg bg-gradient-to-br from-medical-600 to-teal-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow"
+            >
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.493m2.605-14.227l.26-1.493m0 17.726l-.26-1.493M10.698 4.614l-.26-1.493M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12 12l-3-3m0 0l-3 3m3-3v8.5"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <span class="text-lg font-bold text-slate-800 group-hover:text-medical-700 transition-colors"
+                >NurseCase</span
+              >
+              <span class="hidden sm:block text-xs text-slate-500 leading-none">Clinical Training Platform</span>
+            </div>
+          </a>
+
+          <!-- Navigation -->
+          <nav class="flex items-center gap-1">
+            <a
+              href="/"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-medical-700 hover:bg-medical-50 transition-colors"
+            >
+              Home
+            </a>
+            <a
+              href="/case-studies"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-medical-700 hover:bg-medical-50 transition-colors"
+            >
+              Case Studies
+            </a>
+            <a
+              href="/references"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-medical-700 hover:bg-medical-50 transition-colors"
+            >
+              References
+            </a>
+            <a
+              href="/case-studies"
+              class="ml-2 px-4 py-2 rounded-lg text-sm font-medium bg-medical-600 text-white hover:bg-medical-700 transition-colors shadow-sm"
+            >
+              Begin Training
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class={`flex-1 ${fullWidth ? '' : 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8'}`}>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-sm text-slate-500">
+            <svg class="w-4 h-4 text-medical-500" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <span>NurseCase — Multi-Path Clinical Training © 2024</span>
+          </div>
+          <div class="flex items-center gap-4 text-sm text-slate-500">
+            <span class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+              For educational purposes only
+            </span>
+            <span>Not a substitute for clinical judgment</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+
+  /* Transition utilities */
+  .transition-colors {
+    transition-property: color, background-color, border-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* Prose-style content */
+  .prose-clinical p {
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+  .prose-clinical p:last-child {
+    margin-bottom: 0;
+  }
+</style>
