@@ -717,7 +717,7 @@ function handleChoice(scene: Scene, choice: Choice) {
   const chosenBtn = document.getElementById(`choice-${choice.id}`);
   if (chosenBtn) {
     chosenBtn.classList.remove('opacity-50', 'border-slate-200');
-    chosenBtn.classList.add(choice.isCorrect ? 'border-emerald-400 bg-emerald-50' : 'border-red-300 bg-red-50');
+    chosenBtn.classList.add(...(choice.isCorrect ? ['border-emerald-400', 'bg-emerald-50'] : ['border-red-300', 'bg-red-50']));
   }
 
   // Award points; individual choices may carry negative points (penalties for poor decisions),
