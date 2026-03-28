@@ -342,4 +342,147 @@ export const sepsisCase: CaseStudy = {
         'Good thinking about monitoring accuracy, but remember to always address the underlying cause. A complete SBAR recommendation includes both what you are observing AND what you believe is causing it, plus what intervention you recommend.',
     },
   ],
+
+  carePlan: {
+    diagnoses: [
+      {
+        id: 'sep-nd-1',
+        priority: 1,
+        label: 'Ineffective Tissue Perfusion (Systemic)',
+        relatedTo: 'systemic infectious process causing vasodilation and decreased circulating volume',
+        evidencedBy: [
+          'Hypotension: BP 96/58 mmHg',
+          'Elevated lactate 3.8 mmol/L (tissue hypoperfusion marker)',
+          'Altered mental status / GCS 12',
+          'Tachycardia: HR 114 bpm',
+          'SpO₂ 94% on room air',
+        ],
+        shortTermGoals: [
+          'MAP ≥ 65 mmHg within 1 hour of fluid resuscitation',
+          'Lactate trending downward at 2-hour reassessment',
+          'Patient able to follow simple commands within 2 hours',
+        ],
+        longTermGoals: [
+          'Hemodynamic stability (BP ≥ 100/60, HR 60–100) by 24 hours',
+          'Lactate < 2.2 mmol/L prior to discharge from ICU/step-down',
+          'Alert and oriented ×4 at time of transfer to floor',
+        ],
+        interventions: [
+          { action: 'Administer IV crystalloid fluid resuscitation: 30 mL/kg NS bolus (approx. 2,460 mL for 82 kg patient)', rationale: 'Surviving Sepsis Campaign Hour-1 Bundle mandates early aggressive fluid resuscitation to restore intravascular volume and improve perfusion pressure', frequency: 'Initiate immediately; reassess after each 500 mL bolus' },
+          { action: 'Obtain stat blood cultures × 2 sets (peripheral + central if available) before first antibiotic dose', rationale: 'Cultures must be drawn before antibiotics to maximize pathogen identification and guide de-escalation therapy', frequency: 'Once, before antibiotic administration' },
+          { action: 'Initiate broad-spectrum antibiotics per sepsis protocol (e.g., Pip-Tazo 4.5 g IV)', rationale: 'Early antibiotic therapy (< 1 hour) significantly reduces mortality in sepsis; each hour of delay increases mortality by ~7%', frequency: 'Administer within 1 hour of sepsis recognition' },
+          { action: 'Apply supplemental oxygen; target SpO₂ ≥ 95%', rationale: 'Optimizing arterial oxygen content supports tissue oxygen delivery in the setting of impaired perfusion', frequency: 'Continuous; titrate O₂ device to maintain SpO₂ goal' },
+          { action: 'Insert Foley catheter and monitor urine output hourly', rationale: 'Urine output (target ≥ 0.5 mL/kg/h) is a reliable proxy for renal perfusion and overall hemodynamic response', frequency: 'Continuous with hourly documentation' },
+          { action: 'Place patient on continuous cardiac and hemodynamic monitoring; reassess vitals q15–30 min', rationale: 'Frequent monitoring allows early detection of deterioration, vasopressor need, or fluid overload', frequency: 'q15 min during active resuscitation; q30 min once stabilized' },
+        ],
+        status: 'active',
+      },
+      {
+        id: 'sep-nd-2',
+        priority: 2,
+        label: 'Hyperthermia',
+        relatedTo: 'systemic bacterial infection triggering inflammatory cytokine cascade',
+        evidencedBy: [
+          'Temperature 103.1°F (39.5°C)',
+          'Diaphoresis and flushed skin',
+          'Tachycardia (HR 114 bpm) consistent with febrile state',
+          'WBC 18.4 K/µL (leukocytosis)',
+        ],
+        shortTermGoals: [
+          'Temperature < 101°F within 2 hours of antipyretic administration',
+          'Patient reports feeling less uncomfortable from fever within 1 hour',
+        ],
+        longTermGoals: [
+          'Afebrile (temperature < 99°F) for ≥ 24 hours prior to discharge',
+          'WBC trending toward normal range within 48–72 hours of appropriate antibiotic therapy',
+        ],
+        interventions: [
+          { action: 'Administer acetaminophen 650 mg PO/PR per order for temp > 101°F', rationale: 'Antipyretics reduce hypothalamic set point, decrease metabolic demand, and improve patient comfort; avoid NSAIDs given renal compromise', frequency: 'q4–6h PRN per order; do not exceed 3 g/day in 24 hours' },
+          { action: 'Apply cooling blanket or cool compresses to forehead and axillae', rationale: 'External cooling measures supplement pharmacologic antipyresis without masking treatment response', frequency: 'PRN for temp > 103°F or patient discomfort' },
+          { action: 'Promote oral/IV fluid intake to replace insensible losses from diaphoresis', rationale: 'Fever increases insensible fluid losses by ~250 mL/°C above normal; adequate replacement prevents worsening hypovolemia', frequency: 'Ongoing; document I&O' },
+          { action: 'Monitor temperature every 2 hours and after antipyretic administration', rationale: 'Serial temperature monitoring tracks treatment response and may indicate emerging complications (e.g., rigors, temperature spikes suggesting bacteremia)', frequency: 'q2h and 1 hour post-antipyretic' },
+        ],
+        status: 'active',
+      },
+      {
+        id: 'sep-nd-3',
+        priority: 3,
+        label: 'Acute Confusion',
+        relatedTo: 'sepsis-associated encephalopathy from cerebral hypoperfusion and inflammatory mediators',
+        evidencedBy: [
+          'Disoriented to place and time',
+          'GCS 12 (E3V4M5)',
+          'Wife reports "not himself" for 2 days',
+          'Inability to state current year or location',
+        ],
+        shortTermGoals: [
+          'Patient responds consistently to simple commands within 2 hours of resuscitation',
+          'No falls or self-injury events during hospitalization',
+        ],
+        longTermGoals: [
+          'Patient oriented × 4 and able to participate in discharge education prior to discharge',
+          'Return to baseline cognitive function as reported by family',
+        ],
+        interventions: [
+          { action: 'Implement fall prevention protocol: bed in lowest position, rails up × 3, call light within reach, non-slip socks', rationale: 'Confused patients are at high risk for falls; environmental modifications reduce injury risk', frequency: 'Continuously; reassess with each interaction' },
+          { action: 'Reorient patient calmly with each interaction (state name, place, date)', rationale: 'Frequent, calm reorientation reduces agitation and confusion in delirious patients', frequency: 'Every patient contact' },
+          { action: 'Maintain quiet, low-stimulation environment during rest periods; cluster care activities', rationale: 'Minimizing sensory overload reduces agitation and promotes restorative rest, which supports cognitive recovery', frequency: 'Ongoing' },
+          { action: 'Keep family at bedside when possible; familiar voices improve orientation and reduce anxiety', rationale: 'Familiar presence has been shown to decrease delirium severity and duration in hospitalized patients', frequency: 'Encourage during visiting hours' },
+          { action: 'Monitor for escalating agitation or changes in LOC; notify provider for GCS decrease of ≥ 2 points', rationale: 'Deteriorating neurological status may signal worsening septic encephalopathy, hypoxia, or other complications requiring urgent intervention', frequency: 'Neurological checks q1–2h' },
+        ],
+        status: 'active',
+      },
+      {
+        id: 'sep-nd-4',
+        priority: 4,
+        label: 'Risk for Impaired Skin Integrity',
+        relatedTo: 'decreased tissue perfusion, immobility, and diaphoresis secondary to sepsis and fever',
+        evidencedBy: [
+          'Hemodynamic instability limiting mobility',
+          'Diaphoresis keeping skin moist',
+          'Age 68 with decreased skin elasticity',
+          'Potential for prolonged hospitalization',
+        ],
+        shortTermGoals: [
+          'No new areas of skin breakdown during acute resuscitation phase (first 24 hours)',
+          'Skin is kept clean and dry; moisture barrier applied to high-risk areas',
+        ],
+        longTermGoals: [
+          'Skin integrity maintained throughout hospitalization',
+          'Patient and family demonstrate proper skin care techniques before discharge',
+        ],
+        interventions: [
+          { action: 'Perform full skin assessment including all bony prominences on admission and every shift', rationale: 'Baseline and ongoing documentation identifies new areas of concern and establishes accountability for skin care', frequency: 'Every shift; document findings' },
+          { action: 'Reposition patient every 2 hours while hemodynamically unstable; involve physical therapy when stable', rationale: 'Frequent repositioning redistributes pressure, restoring capillary blood flow to at-risk areas', frequency: 'q2h while bed-bound' },
+          { action: 'Apply moisture barrier cream to sacrum, coccyx, and heels; use foam or gel heel protectors', rationale: 'Moisture from diaphoresis and incontinence macerates skin and dramatically increases breakdown risk; prophylactic protection is evidence-based', frequency: 'Every 8 hours and PRN after diaphoresis or incontinence' },
+        ],
+        status: 'active',
+      },
+      {
+        id: 'sep-nd-5',
+        priority: 5,
+        label: 'Deficient Knowledge',
+        relatedTo: 'new diagnosis of sepsis and lack of exposure to information about infection prevention and warning signs',
+        evidencedBy: [
+          'Wife reports 2-day delay in seeking care',
+          'No prior sepsis diagnosis',
+          'Verbalized questions about "what is happening" to patient',
+        ],
+        shortTermGoals: [
+          'Wife able to verbalize understanding of current treatment plan by end of visit',
+          'Patient able to express concerns and questions when able to participate in communication',
+        ],
+        longTermGoals: [
+          'Patient and family able to identify signs/symptoms requiring immediate medical evaluation before discharge',
+          'Patient verbalize understanding of antibiotic adherence, follow-up importance, and infection prevention measures',
+        ],
+        interventions: [
+          { action: 'Provide compassionate, plain-language explanation of sepsis diagnosis, current status, and treatment plan to patient and wife', rationale: 'Family anxiety is high; clear communication builds trust, reduces fear, and improves cooperation with treatment', frequency: 'Initially and as condition changes' },
+          { action: 'Provide written education materials on sepsis, UTI prevention, and "when to call 911" signs', rationale: 'Written materials reinforce verbal education and give family a reference after discharge', frequency: 'Before discharge' },
+          { action: 'Involve case management and social work to address barriers to follow-up care', rationale: 'Social and logistical barriers frequently prevent adherence to follow-up; proactive assessment improves outcomes', frequency: 'Within 24 hours of admission' },
+        ],
+        status: 'active',
+      },
+    ],
+  },
 };
