@@ -145,6 +145,14 @@ export const ckdCase: CaseStudy = {
       clinicalNote:
         '⚡ ECG Changes in Hyperkalemia (in order of progression):\n1. Peaked T-waves (K⁺ 5.5–6.5)\n2. Prolonged PR interval (K⁺ 6.0–7.0)\n3. Widened QRS (K⁺ 7.0–8.0)\n4. Sine wave pattern (K⁺ >8.0)\n5. Ventricular fibrillation / asystole\n\nMrs. Chen is at steps 1–2. Immediate treatment is required.',
       nextSceneId: 'scene-4-hyperkalemia-treatment',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-2',
+            evaluation: 'Continuous cardiac monitoring initiated. 12-lead ECG shows peaked T-waves V2–V5 and QRS 114 ms — hyperkalemia with cardiac involvement confirmed. Physician notified via SBAR. Emergent treatment orders anticipated.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-3-assessment-delay',
@@ -232,6 +240,14 @@ export const ckdCase: CaseStudy = {
       clinicalNote:
         '🔬 Mechanism Review — Hyperkalemia Treatment:\n• Calcium gluconate: Stabilizes cardiac cell membrane (does NOT lower K⁺) — acts in 1–3 minutes, lasts 30–60 min\n• Insulin + D50: Shifts K⁺ into cells — lowers K⁺ by ~0.5–1.5 mEq/L within 30 min\n• Sodium bicarbonate: Shifts K⁺ intracellularly — less reliable in ESRD\n• Kayexalate: Exchanges Na⁺ for K⁺ in GI tract — REMOVES K⁺ from body — onset 1–2 hours\n\n⚠️ Insulin causes hypoglycemia risk: Monitor glucose q30 min × 2 hours post-insulin.',
       nextSceneId: 'scene-6-fluid-overload',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-2',
+            evaluation: 'Hyperkalemia treatment administered: calcium gluconate, insulin/D50, sodium bicarbonate, Kayexalate. Repeat K⁺ 5.6 mEq/L (↓ from 6.4). Cardiac rhythm improved — wide-complex beats resolved. Blood glucose 124 mg/dL — glucose monitoring q30 min × 2 hours in progress.',
+          },
+        ],
+      },
     },
     // ─── STAGE 3: FLUID OVERLOAD ───────────────────────────────────────────
     {
@@ -283,6 +299,18 @@ export const ckdCase: CaseStudy = {
       clinicalNote:
         '🚨 Critical Safety Issue: NSAIDs (ibuprofen, naproxen) are nephrotoxic — they reduce prostaglandin-mediated afferent arteriole dilation, reducing glomerular filtration. In CKD, they are the #1 OTC cause of acute-on-chronic kidney injury. They can accelerate CKD progression by months to years. Her NSAID use likely directly contributed to this acute decompensation.',
       nextSceneId: 'scene-8-nephrotoxin-decision',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-1',
+            evaluation: 'Urine output improved to 320 mL over 2 hours following IV furosemide. Breathing slightly easier. NSAID use (ibuprofen daily × 1 month) identified as nephrotoxin — physician notified. Medications secured and patient education initiated.',
+          },
+          {
+            id: 'ckd-nd-5',
+            evaluation: 'Critical medication safety issue identified: patient using OTC NSAIDs despite documented contraindication. Education initiated regarding NSAID nephrotoxicity. Non-judgmental approach used. Husband engaged in education.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-8-nephrotoxin-decision',
@@ -338,6 +366,18 @@ export const ckdCase: CaseStudy = {
       clinicalNote:
         '🥗 Renal Diet Key Restrictions:\n• Potassium: < 2,000–2,500 mg/day (avoid bananas, oranges, tomatoes, potatoes, dairy)\n• Phosphorus: < 800–1,000 mg/day (avoid dairy, nuts, beans, dark colas)\n• Sodium: < 2,000 mg/day (avoid processed foods, canned goods)\n• Fluid: Individualized restriction (commonly 500–1,000 mL/day in ESRD)\n• Protein: Moderate restriction (0.6–0.8 g/kg/day in non-dialysis CKD)',
       nextSceneId: 'scene-10-diet-decision',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-1',
+            evaluation: 'Urine output 480 mL over 6 hours (diuresis improving). Breathing easier. Crackles decreased. Fluid restriction 1,000 mL/day in place — patient education on fluid tracking initiated.',
+          },
+          {
+            id: 'ckd-nd-2',
+            evaluation: 'Potassium trending to 5.1 mEq/L (from 6.4). Cardiac monitoring continues — no further dysrhythmias. Renal diet potassium restriction reinforced. Breakfast tray assessment completed.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-10-diet-decision',
@@ -504,6 +544,22 @@ export const ckdCase: CaseStudy = {
       clinicalNote:
         '📋 Discharge teaching for CKD/ESRD:\n• Medication changes (furosemide now 80 mg PO daily, metformin HELD — contraindicated in eGFR < 30)\n• Fluid restriction: 1,000 mL/day — teach how to measure\n• Daily weights — call if gain > 2 lbs in 1 day or 5 lbs in 1 week\n• Renal diet: Low K⁺, low phosphorus, low sodium\n• Absolute avoidance: NSAIDs, contrast dye, nephrotoxins\n• Follow-up: Nephrology in 1 week, PCP in 3 days, dialysis center tour',
       nextSceneId: 'scene-16-teach-back',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-1',
+            evaluation: 'Weight 72 kg (↓ 2 kg with diuresis). Bilateral lung sounds clear. Edema improved from 3+ to 1+. BNP trending down 1,420 → 680 pg/mL. Fluid restriction maintained. Patient verbalized daily weight monitoring protocol.',
+          },
+          {
+            id: 'ckd-nd-2',
+            evaluation: 'Potassium 4.9 mEq/L on discharge labs — within safe range. No further dysrhythmias during hospitalization. Dietary K⁺ restriction education reinforced. Renal diet consult completed.',
+          },
+          {
+            id: 'ckd-nd-4',
+            evaluation: 'Patient ambulating in hallway independently × 2 daily. Energy conservation techniques taught. Physical therapy completed graded mobility program. Hemoglobin improving with EPO therapy.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-16-teach-back',
@@ -554,6 +610,23 @@ export const ckdCase: CaseStudy = {
         'Mrs. Chen successfully recalls the three most critical points during teach-back: "I need to weigh myself every morning and call if I gain 2 pounds. I cannot take ibuprofen or any anti-inflammatory — never again. And I need to drink less than 1,000 mL of fluid a day — that\'s about 4 glasses."\n\nShe looks at you: "You know, you\'re the first nurse who ever explained my kidney disease to me like it was real — like my choices actually matter. I\'m going to do better this time."\n\nMrs. Chen is discharged safely. She attends her nephrology follow-up 5 days later. She is enrolled in the peritoneal dialysis education program. Her AV fistula is created 10 days later. She does not require emergency dialysis for 4 more months, during which time her fistula matures and she transitions to a planned start of peritoneal dialysis.\n\n🏅 Excellent work. You demonstrated comprehensive, safe, and compassionate care for a complex ESRD patient.',
       feedback:
         'You navigated all 8 stages of this complex CKD case with clinical excellence. You prioritized life threats, managed hyperkalemia safely, addressed medication hazards, communicated therapeutically, supported a difficult dialysis decision, and validated discharge understanding with teach-back.',
+      carePlanUpdate: {
+        resolveDiagnoses: ['ckd-nd-2'],
+        updateDiagnoses: [
+          {
+            id: 'ckd-nd-1',
+            evaluation: 'Discharge weight at dry weight goal. Lungs clear. Edema 1+. Patient correctly verbalized fluid restriction (1,000 mL/day) using teach-back. Goals met for hospitalization phase — ongoing management at nephrology follow-up.',
+          },
+          {
+            id: 'ckd-nd-3',
+            evaluation: 'Registered dietitian consultation completed. Patient correctly identified renal-safe food alternatives using teach-back. Outpatient renal diet follow-up scheduled.',
+          },
+          {
+            id: 'ckd-nd-5',
+            evaluation: 'Teach-back successful: patient accurately verbalized daily weight protocol, fluid restriction, and NSAID contraindication. Husband confirmed understanding. All discharge education documented. AV fistula consult accepted, PD education program enrolled.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-17-end-partial',
