@@ -33,7 +33,7 @@ import { allCaseStudies } from '../data/case-studies/index.js';
 
       <div class="flex flex-wrap gap-4">
         <a
-          href="/case-studies"
+          href={`${import.meta.env.BASE_URL}/case-studies`}
           class="inline-flex items-center gap-2 bg-white text-medical-700 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:bg-medical-50 transition-all"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -42,7 +42,7 @@ import { allCaseStudies } from '../data/case-studies/index.js';
           Begin Training
         </a>
         <a
-          href="/references"
+          href={`${import.meta.env.BASE_URL}/references`}
           class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/30 transition-all"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -108,7 +108,7 @@ import { allCaseStudies } from '../data/case-studies/index.js';
         <p class="text-slate-500 text-sm mt-0.5">{allCaseStudies.length} interactive cases across multiple specialties</p>
       </div>
       <a
-        href="/case-studies"
+        href={`${import.meta.env.BASE_URL}/case-studies`}
         class="inline-flex items-center gap-1.5 text-sm font-semibold text-medical-600 hover:text-medical-800 transition-colors"
       >
         View all
@@ -205,7 +205,7 @@ import { allCaseStudies } from '../data/case-studies/index.js';
       Each case study takes 20–35 minutes. All you need is your clinical knowledge and the willingness to think critically.
     </p>
     <a
-      href="/case-studies"
+      href={`${import.meta.env.BASE_URL}/case-studies`}
       class="inline-flex items-center gap-2 bg-white text-medical-700 font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-medical-50 transition-all text-lg"
     >
       Start a Case Study
