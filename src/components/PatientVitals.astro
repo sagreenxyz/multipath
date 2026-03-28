@@ -1,0 +1,191 @@
+---
+import type { Vitals, Lab } from '../types/case-study.js';
+
+export interface Props {
+  vitals: Vitals;
+  labs?: Lab[];
+  appearance?: string;
+  patientName: string;
+  showTitle?: boolean;
+}
+
+const { vitals, labs, appearance, patientName, showTitle = true } = Astro.props;
+
+function tempColor(t?: number) {
+  if (!t) return 'text-slate-700';
+  if (t >= 104) return 'text-red-700 font-bold';
+  if (t >= 100.4) return 'text-amber-700 font-semibold';
+  if (t <= 96) return 'text-blue-700 font-semibold';
+  return 'text-emerald-700';
+}
+
+function hrColor(hr?: number) {
+  if (!hr) return 'text-slate-700';
+  if (hr > 130 || hr < 40) return 'text-red-700 font-bold';
+  if (hr > 100 || hr < 60) return 'text-amber-700 font-semibold';
+  return 'text-emerald-700';
+}
+
+function rrColor(rr?: number) {
+  if (!rr) return 'text-slate-700';
+  if (rr > 30 || rr < 8) return 'text-red-700 font-bold';
+  if (rr > 20 || rr < 12) return 'text-amber-700 font-semibold';
+  return 'text-emerald-700';
+}
+
+function bpColor(bp?: string) {
+  if (!bp) return 'text-slate-700';
+  const systolic = parseInt(bp.split('/')[0]);
+  if (systolic < 90 || systolic > 180) return 'text-red-700 font-bold';
+  if (systolic < 100 || systolic > 160) return 'text-amber-700 font-semibold';
+  return 'text-emerald-700';
+}
+
+function spo2Color(spo2?: number) {
+  if (!spo2) return 'text-slate-700';
+  if (spo2 < 90) return 'text-red-700 font-bold';
+  if (spo2 < 95) return 'text-amber-700 font-semibold';
+  return 'text-emerald-700';
+}
+---
+
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+  {showTitle && (
+    <div class="px-4 py-3 bg-gradient-to-r from-medical-600 to-medical-700 flex items-center gap-2">
+      <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+      </svg>
+      <h3 class="text-sm font-semibold text-white">Patient Assessment</h3>
+    </div>
+  )}
+
+  <div class="p-4 space-y-4">
+    <!-- Vital Signs Grid -->
+    <div>
+      <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Vital Signs</h4>
+      <div class="grid grid-cols-2 gap-2">
+        {vitals.temperature !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Temperature</div>
+            <div class={`text-sm ${tempColor(vitals.temperature)}`}>{vitals.temperature}°F</div>
+            <div class="text-xs text-slate-400">{vitals.temperature >= 100.4 ? '▲ Febrile' : 'Afebrile'}</div>
+          </div>
+        )}
+        {vitals.heartRate !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Heart Rate</div>
+            <div class={`text-sm ${hrColor(vitals.heartRate)}`}>{vitals.heartRate} bpm</div>
+            <div class="text-xs text-slate-400">
+              {vitals.heartRate > 100 ? '▲ Tachycardia' : vitals.heartRate < 60 ? '▼ Bradycardia' : 'Normal'}
+            </div>
+          </div>
+        )}
+        {vitals.respiratoryRate !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Resp Rate</div>
+            <div class={`text-sm ${rrColor(vitals.respiratoryRate)}`}>{vitals.respiratoryRate}/min</div>
+            <div class="text-xs text-slate-400">
+              {vitals.respiratoryRate > 20 ? '▲ Tachypnea' : vitals.respiratoryRate < 12 ? '▼ Bradypnea' : 'Normal'}
+            </div>
+          </div>
+        )}
+        {vitals.bloodPressure !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Blood Pressure</div>
+            <div class={`text-sm ${bpColor(vitals.bloodPressure)}`}>{vitals.bloodPressure} mmHg</div>
+            <div class="text-xs text-slate-400">
+              {parseInt(vitals.bloodPressure.split('/')[0]) < 90 ? '▼ Hypotension' :
+               parseInt(vitals.bloodPressure.split('/')[0]) > 160 ? '▲ Hypertension' : 'Normal'}
+            </div>
+          </div>
+        )}
+        {vitals.oxygenSaturation !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">SpO₂</div>
+            <div class={`text-sm ${spo2Color(vitals.oxygenSaturation)}`}>{vitals.oxygenSaturation}%</div>
+            <div class="text-xs text-slate-400">
+              {vitals.oxygenSaturation < 90 ? '▼ Critical' : vitals.oxygenSaturation < 95 ? '▼ Low' : 'Normal'}
+            </div>
+          </div>
+        )}
+        {vitals.painLevel !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Pain (0–10)</div>
+            <div class={`text-sm ${vitals.painLevel >= 7 ? 'text-red-700 font-bold' : vitals.painLevel >= 4 ? 'text-amber-700 font-semibold' : 'text-emerald-700'}`}>
+              {vitals.painLevel}/10
+            </div>
+            <div class="text-xs text-slate-400">
+              {vitals.painLevel >= 7 ? 'Severe' : vitals.painLevel >= 4 ? 'Moderate' : vitals.painLevel > 0 ? 'Mild' : 'None'}
+            </div>
+          </div>
+        )}
+        {vitals.bloodGlucose !== undefined && (
+          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+            <div class="text-xs text-slate-500 mb-0.5">Blood Glucose</div>
+            <div class={`text-sm ${vitals.bloodGlucose > 250 || vitals.bloodGlucose < 60 ? 'text-red-700 font-bold' : vitals.bloodGlucose > 180 ? 'text-amber-700 font-semibold' : 'text-emerald-700'}`}>
+              {vitals.bloodGlucose} mg/dL
+            </div>
+            <div class="text-xs text-slate-400">
+              {vitals.bloodGlucose > 250 ? '▲ High' : vitals.bloodGlucose < 60 ? '▼ Hypoglycemia' : vitals.bloodGlucose > 180 ? '▲ Elevated' : 'Normal'}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    {appearance && (
+      <div>
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">General Appearance</h4>
+        <p class="text-sm text-slate-700 bg-slate-50 rounded-lg p-3 border border-slate-100 leading-relaxed">
+          {appearance}
+        </p>
+      </div>
+    )}
+
+    <!-- Labs -->
+    {labs && labs.length > 0 && (
+      <div>
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Laboratory Results</h4>
+        <div class="space-y-1.5">
+          {labs.map((lab) => (
+            <div class={`flex items-center justify-between text-xs rounded-lg px-3 py-2 border ${
+              lab.critical
+                ? 'bg-red-50 border-red-200'
+                : lab.abnormal
+                  ? 'bg-amber-50 border-amber-200'
+                  : 'bg-slate-50 border-slate-100'
+            }`}>
+              <div class="flex items-center gap-2">
+                {lab.critical && (
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse flex-shrink-0"></span>
+                )}
+                {lab.abnormal && !lab.critical && (
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                )}
+                {!lab.abnormal && (
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
+                )}
+                <span class={`font-medium ${lab.critical ? 'text-red-800' : lab.abnormal ? 'text-amber-800' : 'text-slate-700'}`}>
+                  {lab.name}
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class={`font-bold ${lab.critical ? 'text-red-700' : lab.abnormal ? 'text-amber-700' : 'text-slate-700'}`}>
+                  {lab.value} {lab.unit}
+                </span>
+                <span class="text-slate-400 hidden sm:inline">({lab.referenceRange})</span>
+                {lab.critical && <span class="text-red-600 font-bold">CRITICAL</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="flex items-center gap-4 mt-2 text-xs text-slate-500">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Normal</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Abnormal</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span>Critical</span>
+        </div>
+      </div>
+    )}
+  </div>
+</div>

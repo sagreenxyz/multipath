@@ -1,0 +1,1021 @@
+---
+import type { CaseStudy, Scene, Vitals } from '../types/case-study.js';
+
+export interface Props {
+  caseStudy: CaseStudy;
+}
+
+const { caseStudy } = Astro.props;
+
+// Merge vitals as scenes progress (for initial render only — dynamic updates via JS)
+const caseStudyJSON = JSON.stringify(caseStudy);
+---
+
+<div id="case-engine" class="min-h-screen bg-slate-50" data-case={caseStudyJSON}>
+  <!-- Top status bar -->
+  <div class="bg-white border-b border-slate-200 px-4 py-2 sticky top-16 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+          <span class="text-sm font-medium text-slate-700" id="case-title">{caseStudy.title}</span>
+        </div>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm text-slate-500">Patient: <strong class="text-slate-700">{caseStudy.patient.name}</strong>, {caseStudy.patient.age}yo</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1.5 text-sm">
+          <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="text-slate-500">Time: </span>
+          <span class="font-semibold text-slate-700" id="time-display">T+0 min</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-sm">
+          <svg class="w-4 h-4 text-medical-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.601a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+          </svg>
+          <span class="text-slate-500">Score: </span>
+          <span class="font-semibold text-medical-700" id="score-display">0</span>
+          <span class="text-slate-400">/ {caseStudy.maxScore}</span>
+        </div>
+        <button
+          id="ref-toggle"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 text-sm font-medium hover:bg-teal-100 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+          </svg>
+          References
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex gap-6" id="main-layout">
+      <!-- Left sidebar: patient info -->
+      <aside class="hidden xl:block w-72 flex-shrink-0 space-y-4">
+        <!-- Patient card -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="bg-gradient-to-r from-slate-700 to-slate-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-slate-500 flex items-center justify-center text-white text-lg font-bold">
+                {caseStudy.patient.name.charAt(0)}
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white">{caseStudy.patient.name}</p>
+                <p class="text-xs text-slate-300">{caseStudy.patient.age}yo {caseStudy.patient.gender} · {caseStudy.patient.weight}kg</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 space-y-3 text-sm">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Chief Complaint</p>
+              <p class="text-slate-700 leading-relaxed text-xs">{caseStudy.patient.chiefComplaint}</p>
+            </div>
+            {caseStudy.patient.allergies.length > 0 && (
+              <div>
+                <p class="text-xs font-semibold text-red-500 uppercase tracking-wide mb-1">⚠ Allergies</p>
+                <div class="flex flex-wrap gap-1">
+                  {caseStudy.patient.allergies.map(a => (
+                    <span class="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-xs">{a}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Medical History</p>
+              <ul class="space-y-0.5">
+                {caseStudy.patient.medicalHistory.map(h => (
+                  <li class="text-xs text-slate-600 flex items-start gap-1.5">
+                    <span class="text-slate-400 mt-0.5">•</span>{h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Current Medications</p>
+              <ul class="space-y-0.5">
+                {caseStudy.patient.currentMedications.map(m => (
+                  <li class="text-xs text-slate-600 flex items-start gap-1.5">
+                    <span class="text-medical-400 mt-0.5">💊</span>{m}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live vitals (updated by JS) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="vitals-panel">
+          <div class="px-4 py-3 bg-gradient-to-r from-medical-600 to-medical-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+            </svg>
+            <span class="text-sm font-semibold text-white">Current Vitals</span>
+          </div>
+          <div class="p-3 space-y-1.5" id="vitals-content">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Labs panel -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="labs-panel" style="display:none">
+          <div class="px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1 1 .03 2.798-1.414 2.798H4.213c-1.445 0-2.414-1.799-1.414-2.798L5 14.5"/>
+            </svg>
+            <span class="text-sm font-semibold text-white">Lab Results</span>
+          </div>
+          <div class="p-3 space-y-1" id="labs-content">
+          </div>
+        </div>
+
+        <!-- Imaging panel -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="imaging-panel" style="display:none">
+          <div class="px-4 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
+            </svg>
+            <span class="text-sm font-semibold text-white">Imaging / Diagnostics</span>
+          </div>
+          <div class="p-3 space-y-3" id="imaging-content">
+          </div>
+        </div>
+
+        <!-- Learning objectives -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-4 py-3 bg-gradient-to-r from-teal-600 to-teal-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
+            </svg>
+            <span class="text-sm font-semibold text-white">Learning Objectives</span>
+          </div>
+          <div class="p-3 space-y-2">
+            {caseStudy.learningObjectives.map((lo, i) => (
+              <div class="flex items-start gap-2 text-xs">
+                <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-700 flex-shrink-0 flex items-center justify-center font-bold text-xs">{i+1}</span>
+                <span class="text-slate-600 leading-relaxed">{lo.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main content area -->
+      <div class="flex-1 min-w-0 space-y-4">
+        <!-- Scene display -->
+        <div id="scene-container">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Right sidebar: References (hidden by default on mobile) -->
+      <aside class="hidden lg:block w-72 flex-shrink-0" id="ref-sidebar">
+        <div class="sticky top-32 space-y-3">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-4 py-3 bg-gradient-to-r from-teal-600 to-teal-700">
+              <h3 class="text-sm font-bold text-white">Quick Reference</h3>
+              <p class="text-xs text-teal-100">Click to expand each section</p>
+            </div>
+            <div class="divide-y divide-slate-100" id="ref-accordion">
+
+              <!-- Drug Reference -->
+              <div class="ref-section">
+                <button class="ref-btn w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors" data-target="drugs-content">
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg">💊</span>
+                    <span class="text-sm font-semibold text-slate-700">Drug References</span>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-400 ref-chevron transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                  </svg>
+                </button>
+                <div class="ref-content hidden px-4 pb-4" id="drugs-content">
+                  <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                    <div id="drug-list"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Assessment Tools -->
+              <div class="ref-section">
+                <button class="ref-btn w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors" data-target="tools-content">
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg">📋</span>
+                    <span class="text-sm font-semibold text-slate-700">Assessment Tools</span>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-400 ref-chevron transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                  </svg>
+                </button>
+                <div class="ref-content hidden px-4 pb-4" id="tools-content">
+                  <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                    <div id="tool-list"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Normal Values -->
+              <div class="ref-section">
+                <button class="ref-btn w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors" data-target="norms-content">
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg">📊</span>
+                    <span class="text-sm font-semibold text-slate-700">Normal Values</span>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-400 ref-chevron transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                  </svg>
+                </button>
+                <div class="ref-content hidden px-4 pb-4" id="norms-content">
+                  <div class="text-xs text-slate-600 space-y-1.5">
+                    <div class="font-semibold text-slate-700 mb-2">Vital Signs</div>
+                    <div class="flex justify-between"><span>Temperature</span><span class="text-slate-500">97.8–99.1°F</span></div>
+                    <div class="flex justify-between"><span>Heart Rate</span><span class="text-slate-500">60–100 bpm</span></div>
+                    <div class="flex justify-between"><span>Blood Pressure</span><span class="text-slate-500">< 120/80 mmHg</span></div>
+                    <div class="flex justify-between"><span>Resp Rate</span><span class="text-slate-500">12–20/min</span></div>
+                    <div class="flex justify-between"><span>SpO₂</span><span class="text-slate-500">≥ 95%</span></div>
+                    <div class="border-t border-slate-100 pt-2 mt-2 font-semibold text-slate-700">Labs</div>
+                    <div class="flex justify-between"><span>WBC</span><span class="text-slate-500">4.5–11.0 K/µL</span></div>
+                    <div class="flex justify-between"><span>Hgb (M)</span><span class="text-slate-500">13.5–17.5 g/dL</span></div>
+                    <div class="flex justify-between"><span>Hgb (F)</span><span class="text-slate-500">12.0–16.0 g/dL</span></div>
+                    <div class="flex justify-between"><span>Platelets</span><span class="text-slate-500">150–400 K/µL</span></div>
+                    <div class="flex justify-between"><span>Sodium</span><span class="text-slate-500">136–145 mEq/L</span></div>
+                    <div class="flex justify-between"><span>Potassium</span><span class="text-slate-500">3.5–5.0 mEq/L</span></div>
+                    <div class="flex justify-between"><span>Creatinine (M)</span><span class="text-slate-500">0.7–1.3 mg/dL</span></div>
+                    <div class="flex justify-between"><span>BUN</span><span class="text-slate-500">7–25 mg/dL</span></div>
+                    <div class="flex justify-between"><span>Glucose</span><span class="text-slate-500">70–100 mg/dL</span></div>
+                    <div class="flex justify-between"><span>Lactate</span><span class="text-slate-500">0.5–2.2 mmol/L</span></div>
+                    <div class="flex justify-between"><span>Troponin I</span><span class="text-slate-500">< 0.04 ng/mL</span></div>
+                    <div class="flex justify-between"><span>INR</span><span class="text-slate-500">0.8–1.2</span></div>
+                    <div class="flex justify-between"><span>aPTT</span><span class="text-slate-500">25–35 sec</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SBAR Template -->
+              <div class="ref-section">
+                <button class="ref-btn w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors" data-target="sbar-content">
+                  <div class="flex items-center gap-2">
+                    <span class="text-lg">📞</span>
+                    <span class="text-sm font-semibold text-slate-700">SBAR Template</span>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-400 ref-chevron transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                  </svg>
+                </button>
+                <div class="ref-content hidden px-4 pb-4" id="sbar-content">
+                  <div class="space-y-2 text-xs">
+                    {[
+                      { letter: 'S', color: 'bg-red-100 text-red-800 border-red-200', label: 'Situation', desc: 'Who you are, patient name, and immediate concern' },
+                      { letter: 'B', color: 'bg-amber-100 text-amber-800 border-amber-200', label: 'Background', desc: 'Diagnosis, history, meds, recent events' },
+                      { letter: 'A', color: 'bg-blue-100 text-blue-800 border-blue-200', label: 'Assessment', desc: 'Your clinical assessment and key findings' },
+                      { letter: 'R', color: 'bg-green-100 text-green-800 border-green-200', label: 'Recommendation', desc: 'What you need: orders, evaluation, transfer' },
+                    ].map(({ letter, color, label, desc }) => (
+                      <div class={`rounded-lg p-2.5 border ${color}`}>
+                        <div class="font-bold text-sm mb-0.5">{letter} — {label}</div>
+                        <div>{desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Reference modal (mobile) -->
+  <div id="ref-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end lg:hidden">
+    <div class="bg-white w-full rounded-t-2xl max-h-[80vh] overflow-y-auto">
+      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="font-bold text-slate-800">Quick Reference</h3>
+        <button id="ref-modal-close" class="p-2 rounded-lg hover:bg-slate-100 text-slate-600">✕</button>
+      </div>
+      <div class="p-4">
+        <p class="text-sm text-slate-500 mb-4">Visit the <a href="/references" class="text-medical-600 font-medium hover:underline">full References page</a> for detailed information.</p>
+        <!-- Normal Values Quick Reference -->
+        <div class="space-y-1.5 text-sm">
+          <div class="font-semibold text-slate-700 mb-2">Normal Vital Signs</div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">Temp</div><div class="text-slate-500">97.8–99.1°F</div></div>
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">Heart Rate</div><div class="text-slate-500">60–100 bpm</div></div>
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">BP</div><div class="text-slate-500">< 120/80</div></div>
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">RR</div><div class="text-slate-500">12–20/min</div></div>
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">SpO₂</div><div class="text-slate-500">≥ 95%</div></div>
+            <div class="bg-slate-50 rounded p-2"><div class="font-medium">Lactate</div><div class="text-slate-500">< 2.2 mmol/L</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// Multipath Engine — Client-side case study runtime
+// =====================================================================
+
+interface Vitals {
+  temperature?: number;
+  heartRate?: number;
+  respiratoryRate?: number;
+  bloodPressure?: string;
+  oxygenSaturation?: number;
+  painLevel?: number;
+  bloodGlucose?: number;
+  weight?: number;
+  height?: number;
+}
+
+interface Lab {
+  name: string;
+  value: string;
+  unit: string;
+  referenceRange: string;
+  abnormal: boolean;
+  critical?: boolean;
+}
+
+interface ImagingResult {
+  type: string;
+  description: string;
+  findings: string;
+}
+
+interface Choice {
+  id: string;
+  text: string;
+  nextSceneId: string;
+  points: number;
+  feedback: string;
+  isCorrect: boolean;
+  rationale?: string;
+}
+
+interface Scene {
+  id: string;
+  type: string;
+  title: string;
+  narrative: string;
+  clinicalNote?: string;
+  vitalsUpdate?: Partial<Vitals>;
+  newLabs?: Lab[];
+  newImaging?: ImagingResult[];
+  choices?: Choice[];
+  feedback?: string;
+  nextSceneId?: string;
+  endType?: string;
+  scoreBonus?: number;
+  timeElapsed?: number;
+}
+
+interface CaseStudy {
+  id: string;
+  title: string;
+  patient: {
+    name: string;
+    age: number;
+    gender: string;
+    vitals: Vitals;
+    labs?: Lab[];
+    imaging?: ImagingResult[];
+    appearance?: string;
+  };
+  scenes: Scene[];
+  startSceneId: string;
+  maxScore: number;
+}
+
+// Load case study data
+const engineEl = document.getElementById('case-engine');
+if (!engineEl) throw new Error('Engine element not found');
+const caseStudy: CaseStudy = JSON.parse(engineEl.dataset.case || '{}');
+
+// State
+let currentScore = 0;
+let currentVitals: Vitals = { ...caseStudy.patient.vitals };
+let currentLabs: Lab[] = [...(caseStudy.patient.labs || [])];
+let currentImaging: ImagingResult[] = [...(caseStudy.patient.imaging || [])];
+let history: string[] = [];
+let choiceHistory: { sceneId: string; choiceId: string; points: number }[] = [];
+
+// ── Scene map
+const sceneMap = new Map<string, Scene>();
+for (const scene of caseStudy.scenes) {
+  sceneMap.set(scene.id, scene);
+}
+
+// ── Render helpers ────────────────────────────────────────────────────
+
+function escHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+function renderVitals(v: Vitals) {
+  const panel = document.getElementById('vitals-content');
+  if (!panel) return;
+
+  const items: { label: string; value: string; sub: string; color: string }[] = [];
+
+  if (v.temperature !== undefined)
+    items.push({
+      label: 'Temp',
+      value: `${v.temperature}°F`,
+      sub: v.temperature >= 100.4 ? '▲ Febrile' : 'Afebrile',
+      color: v.temperature >= 104 ? 'text-red-700' : v.temperature >= 100.4 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  if (v.heartRate !== undefined)
+    items.push({
+      label: 'HR',
+      value: `${v.heartRate} bpm`,
+      sub: v.heartRate > 100 ? '▲ Tachy' : v.heartRate < 60 ? '▼ Brady' : 'Normal',
+      color: v.heartRate > 130 || v.heartRate < 40 ? 'text-red-700' : v.heartRate > 100 || v.heartRate < 60 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  if (v.respiratoryRate !== undefined)
+    items.push({
+      label: 'RR',
+      value: `${v.respiratoryRate}/min`,
+      sub: v.respiratoryRate > 20 ? '▲ Tachypnea' : v.respiratoryRate < 12 ? '▼' : 'Normal',
+      color: v.respiratoryRate > 30 || v.respiratoryRate < 8 ? 'text-red-700' : v.respiratoryRate > 20 || v.respiratoryRate < 12 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  if (v.bloodPressure !== undefined) {
+    const sys = parseInt(v.bloodPressure.split('/')[0]);
+    items.push({
+      label: 'BP',
+      value: `${v.bloodPressure} mmHg`,
+      sub: sys < 90 ? '▼ Hypotension' : sys > 160 ? '▲ Hypertension' : 'Normal',
+      color: sys < 90 || sys > 180 ? 'text-red-700' : sys < 100 || sys > 160 ? 'text-amber-700' : 'text-emerald-700',
+    });
+  }
+
+  if (v.oxygenSaturation !== undefined)
+    items.push({
+      label: 'SpO₂',
+      value: `${v.oxygenSaturation}%`,
+      sub: v.oxygenSaturation < 90 ? '▼ Critical' : v.oxygenSaturation < 95 ? '▼ Low' : 'Normal',
+      color: v.oxygenSaturation < 90 ? 'text-red-700' : v.oxygenSaturation < 95 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  if (v.painLevel !== undefined)
+    items.push({
+      label: 'Pain',
+      value: `${v.painLevel}/10`,
+      sub: v.painLevel >= 7 ? 'Severe' : v.painLevel >= 4 ? 'Moderate' : 'Mild',
+      color: v.painLevel >= 7 ? 'text-red-700' : v.painLevel >= 4 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  if (v.bloodGlucose !== undefined)
+    items.push({
+      label: 'BG',
+      value: `${v.bloodGlucose} mg/dL`,
+      sub: v.bloodGlucose > 250 ? '▲ High' : v.bloodGlucose < 60 ? '▼ Low' : v.bloodGlucose > 180 ? '▲ Elevated' : 'Normal',
+      color: v.bloodGlucose > 250 || v.bloodGlucose < 60 ? 'text-red-700' : v.bloodGlucose > 180 ? 'text-amber-700' : 'text-emerald-700',
+    });
+
+  panel.innerHTML = items
+    .map(
+      (item) => `
+    <div class="flex items-center justify-between text-xs rounded-lg px-2.5 py-2 bg-slate-50 border border-slate-100">
+      <span class="text-slate-500 font-medium">${item.label}</span>
+      <div class="text-right">
+        <div class="${item.color} font-semibold">${item.value}</div>
+        <div class="text-slate-400 text-xs">${item.sub}</div>
+      </div>
+    </div>`,
+    )
+    .join('');
+}
+
+function renderLabs(labs: Lab[]) {
+  const panel = document.getElementById('labs-panel');
+  const content = document.getElementById('labs-content');
+  if (!panel || !content || labs.length === 0) return;
+
+  panel.style.display = 'block';
+  content.innerHTML = labs
+    .map(
+      (lab) => `
+    <div class="flex items-center justify-between text-xs rounded px-2 py-1.5 ${lab.critical ? 'bg-red-50 border border-red-200' : lab.abnormal ? 'bg-amber-50 border border-amber-200' : 'bg-slate-50 border border-slate-100'}">
+      <div class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${lab.critical ? 'bg-red-500' : lab.abnormal ? 'bg-amber-400' : 'bg-emerald-400'}"></span>
+        <span class="${lab.critical ? 'text-red-800' : lab.abnormal ? 'text-amber-800' : 'text-slate-700'} font-medium">${lab.name}</span>
+      </div>
+      <div class="${lab.critical ? 'text-red-700' : lab.abnormal ? 'text-amber-700' : 'text-slate-600'} font-bold">${lab.value} ${lab.unit}</div>
+    </div>`,
+    )
+    .join('');
+}
+
+function renderImaging(imaging: ImagingResult[]) {
+  const panel = document.getElementById('imaging-panel');
+  const content = document.getElementById('imaging-content');
+  if (!panel || !content || imaging.length === 0) return;
+
+  panel.style.display = 'block';
+  content.innerHTML = imaging
+    .map(
+      (img) => `
+    <div class="border border-indigo-100 rounded-lg p-3 bg-indigo-50">
+      <div class="font-semibold text-indigo-800 text-xs mb-1">${img.type}</div>
+      <div class="text-xs text-indigo-600 mb-1">${img.description}</div>
+      <div class="text-xs text-slate-700 leading-relaxed">${img.findings}</div>
+    </div>`,
+    )
+    .join('');
+}
+
+function renderScene(scene: Scene) {
+  const container = document.getElementById('scene-container');
+  if (!container) return;
+
+  // Update vitals if the scene has updates
+  if (scene.vitalsUpdate) {
+    currentVitals = { ...currentVitals, ...scene.vitalsUpdate };
+    renderVitals(currentVitals);
+  }
+  if (scene.newLabs?.length) {
+    currentLabs = [...currentLabs, ...scene.newLabs];
+    renderLabs(currentLabs);
+  }
+  if (scene.newImaging?.length) {
+    currentImaging = [...currentImaging, ...scene.newImaging];
+    renderImaging(currentImaging);
+  }
+
+  // Update score display if bonus
+  if (scene.scoreBonus) {
+    currentScore += scene.scoreBonus;
+    updateScoreDisplay();
+  }
+
+  // Update time display
+  if (scene.timeElapsed !== undefined) {
+    const timeEl = document.getElementById('time-display');
+    if (timeEl) timeEl.textContent = `T+${scene.timeElapsed} min`;
+  }
+
+  if (scene.type === 'end') {
+    renderEndScene(scene);
+    return;
+  }
+
+  const isDecision = scene.type === 'decision' && scene.choices?.length;
+  const clinicalNoteHtml = scene.clinicalNote
+    ? `<div class="mt-4 rounded-xl border border-teal-200 bg-teal-50 p-4">
+        <p class="text-sm text-teal-800 leading-relaxed whitespace-pre-line">${escHtml(scene.clinicalNote)}</p>
+      </div>`
+    : '';
+
+  const sceneTypeLabel: Record<string, string> = {
+    narrative: '📖 Narrative',
+    decision: '🤔 Decision Point',
+    assessment: '🩺 Assessment Update',
+    feedback: '💬 Feedback',
+  };
+
+  container.innerHTML = `
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in" id="scene-card">
+      <!-- Scene header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">${sceneTypeLabel[scene.type] || scene.type}</span>
+            ${history.length > 0 ? `<span class="text-xs text-slate-400">Step ${history.length + 1}</span>` : ''}
+          </div>
+          <h2 class="text-xl font-bold text-slate-800">${scene.title}</h2>
+        </div>
+        ${isDecision ? `<div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center text-xl">❓</div>` : ''}
+      </div>
+
+      <!-- Narrative -->
+      <div class="px-6 py-5">
+        <div class="prose-clinical text-slate-700 leading-relaxed text-base whitespace-pre-line">${escHtml(scene.narrative)}</div>
+        ${clinicalNoteHtml}
+
+        <!-- Choices / Continue button -->
+        ${isDecision ? renderChoicesHtml(scene) : renderContinueHtml(scene)}
+      </div>
+    </div>
+
+    <!-- Decision history -->
+    ${choiceHistory.length > 0 ? renderHistoryHtml() : ''}
+  `;
+
+  // Attach event listeners
+  if (isDecision) {
+    scene.choices!.forEach((choice) => {
+      const btn = document.getElementById(`choice-${choice.id}`);
+      btn?.addEventListener('click', () => handleChoice(scene, choice));
+    });
+  } else {
+    const continueBtn = document.getElementById('continue-btn');
+    continueBtn?.addEventListener('click', () => {
+      if (scene.nextSceneId) {
+        history.push(scene.id);
+        goToScene(scene.nextSceneId);
+      }
+    });
+  }
+
+  // Scroll to top of scene
+  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderChoicesHtml(scene: Scene): string {
+  if (!scene.choices) return '';
+  return `
+    <div class="mt-6">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="h-px flex-1 bg-slate-200"></div>
+        <span class="text-sm font-semibold text-slate-500 px-2">Your Decision</span>
+        <div class="h-px flex-1 bg-slate-200"></div>
+      </div>
+      <p class="text-sm text-slate-500 mb-4 italic">As the nurse, what do you do?</p>
+      <div class="space-y-3">
+        ${scene.choices
+          .map(
+            (choice) => `
+          <button
+            id="choice-${choice.id}"
+            class="choice-btn w-full text-left px-5 py-4 rounded-xl border-2 border-slate-200 bg-white hover:border-medical-400 hover:bg-medical-50 transition-all duration-200 group"
+          >
+            <div class="flex items-start gap-3">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-medical-400 flex items-center justify-center mt-0.5 transition-colors">
+                <span class="w-2 h-2 rounded-full bg-transparent group-hover:bg-medical-400 transition-colors"></span>
+              </span>
+              <span class="text-sm text-slate-700 leading-relaxed">${choice.text}</span>
+            </div>
+          </button>`,
+          )
+          .join('')}
+      </div>
+    </div>`;
+}
+
+function renderContinueHtml(scene: Scene): string {
+  if (!scene.nextSceneId && scene.type !== 'end') return '';
+  return `
+    <div class="mt-6 flex justify-end">
+      <button
+        id="continue-btn"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-medical-600 hover:bg-medical-700 text-white font-semibold rounded-xl shadow-sm transition-colors"
+      >
+        Continue
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+      </button>
+    </div>`;
+}
+
+function renderHistoryHtml(): string {
+  return `
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="px-4 py-3 bg-slate-50 border-b border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-600">Your Decisions So Far</h3>
+      </div>
+      <div class="p-4 space-y-2">
+        ${choiceHistory
+          .map(
+            (c, i) => `
+          <div class="flex items-center gap-2 text-xs text-slate-600">
+            <span class="w-5 h-5 rounded-full ${c.points > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} flex items-center justify-center font-bold flex-shrink-0">${i + 1}</span>
+            <span>${c.points > 0 ? '+' : ''}${c.points} pts</span>
+          </div>`,
+          )
+          .join('')}
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-sm font-semibold">
+          <span class="text-slate-600">Running Score</span>
+          <span class="text-medical-700">${currentScore} pts</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function handleChoice(scene: Scene, choice: Choice) {
+  // Disable all choice buttons
+  document.querySelectorAll('.choice-btn').forEach((btn) => {
+    (btn as HTMLButtonElement).disabled = true;
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+  });
+
+  // Highlight chosen button
+  const chosenBtn = document.getElementById(`choice-${choice.id}`);
+  if (chosenBtn) {
+    chosenBtn.classList.remove('opacity-50', 'border-slate-200');
+    chosenBtn.classList.add(choice.isCorrect ? 'border-emerald-400 bg-emerald-50' : 'border-red-300 bg-red-50');
+  }
+
+  // Award points; individual choices may carry negative points (penalties for poor decisions),
+  // but the cumulative display score is floored at 0 to avoid discouraging learners.
+  currentScore = Math.max(0, currentScore + choice.points);
+  updateScoreDisplay();
+
+  // Track choice
+  choiceHistory.push({ sceneId: scene.id, choiceId: choice.id, points: choice.points });
+  history.push(scene.id);
+
+  // Persist to localStorage
+  saveProgress();
+
+  // Render feedback inline
+  const choicesDiv = chosenBtn?.parentElement?.parentElement;
+  if (choicesDiv) {
+    const feedbackEl = document.createElement('div');
+    feedbackEl.className = `mt-4 rounded-xl border p-4 ${choice.isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`;
+    feedbackEl.innerHTML = `
+      <p class="text-sm leading-relaxed ${choice.isCorrect ? 'text-emerald-800' : 'text-red-800'} whitespace-pre-line">${escHtml(choice.feedback)}</p>
+      ${choice.rationale ? `<p class="text-xs text-slate-600 mt-2 leading-relaxed border-t border-slate-200 pt-2"><strong>Rationale:</strong> ${choice.rationale}</p>` : ''}
+      <div class="flex items-center justify-between mt-3 pt-2 border-t ${choice.isCorrect ? 'border-emerald-200' : 'border-red-200'}">
+        <span class="text-xs font-semibold ${choice.points > 0 ? 'text-emerald-700' : 'text-red-700'}">${choice.points > 0 ? '+' : ''}${choice.points} points</span>
+        <button id="next-scene-btn" class="inline-flex items-center gap-2 px-5 py-2 bg-medical-600 hover:bg-medical-700 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm">
+          Continue
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+          </svg>
+        </button>
+      </div>
+    `;
+    choicesDiv.appendChild(feedbackEl);
+
+    document.getElementById('next-scene-btn')?.addEventListener('click', () => {
+      goToScene(choice.nextSceneId);
+    });
+  }
+}
+
+function renderEndScene(scene: Scene) {
+  const container = document.getElementById('scene-container');
+  if (!container) return;
+
+  const endConfig = {
+    success: {
+      gradient: 'from-emerald-600 to-teal-600',
+      icon: '🏆',
+      badge: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      badgeText: 'Excellent Outcome',
+    },
+    partial: {
+      gradient: 'from-amber-500 to-orange-500',
+      icon: '📋',
+      badge: 'bg-amber-100 text-amber-800 border-amber-300',
+      badgeText: 'Partial Success',
+    },
+    failure: {
+      gradient: 'from-red-600 to-rose-600',
+      icon: '⚠️',
+      badge: 'bg-red-100 text-red-800 border-red-300',
+      badgeText: 'Adverse Outcome — Review',
+    },
+  };
+
+  const cfg = endConfig[scene.endType as keyof typeof endConfig] || endConfig.partial;
+  const pct = Math.round((currentScore / (caseStudy.maxScore || 1)) * 100);
+
+  // Save final score
+  saveProgress(true);
+
+  container.innerHTML = `
+    <div class="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
+      <div class="bg-gradient-to-r ${cfg.gradient} px-6 py-8 text-center">
+        <div class="text-6xl mb-3">${cfg.icon}</div>
+        <h2 class="text-2xl font-bold text-white mb-2">Case Complete</h2>
+        <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold border ${cfg.badge}">${cfg.badgeText}</span>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <!-- Score -->
+        <div class="text-center">
+          <div class="text-5xl font-bold text-slate-800 mb-1">${currentScore}<span class="text-2xl text-slate-400">/${caseStudy.maxScore}</span></div>
+          <p class="text-slate-500 text-sm mb-4">Final Score</p>
+          <div class="max-w-xs mx-auto bg-slate-100 rounded-full h-3 overflow-hidden">
+            <div class="h-full rounded-full ${pct >= 70 ? 'bg-emerald-500' : pct >= 40 ? 'bg-amber-500' : 'bg-red-500'} transition-all duration-1000" style="width: ${pct}%"></div>
+          </div>
+          <p class="text-sm text-slate-500 mt-1">${pct}% — ${pct >= 80 ? 'Excellent' : pct >= 60 ? 'Good' : pct >= 40 ? 'Developing' : 'Needs Review'}</p>
+        </div>
+
+        <!-- Outcome narrative -->
+        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
+          <h3 class="font-bold text-slate-700 mb-3">${scene.title}</h3>
+          <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">${escHtml(scene.narrative)}</p>
+          ${scene.clinicalNote ? `<div class="mt-4 p-3 bg-teal-50 rounded-lg border border-teal-200"><p class="text-sm text-teal-800 whitespace-pre-line">${escHtml(scene.clinicalNote)}</p></div>` : ''}
+        </div>
+
+        <!-- Feedback -->
+        ${scene.feedback ? `
+          <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-2">Instructor Feedback</h4>
+            <p class="text-sm text-blue-700 leading-relaxed">${escHtml(scene.feedback)}</p>
+          </div>
+        ` : ''}
+
+        <!-- Decision summary -->
+        ${choiceHistory.length > 0 ? `
+          <div>
+            <h4 class="font-semibold text-slate-700 mb-3">Decision Summary</h4>
+            <div class="space-y-2">
+              ${choiceHistory.map((c, i) => `
+                <div class="flex items-center justify-between text-sm p-3 rounded-lg ${c.points > 0 ? 'bg-emerald-50 border border-emerald-100' : 'bg-red-50 border border-red-100'}">
+                  <span class="${c.points > 0 ? 'text-emerald-700' : 'text-red-700'}">Decision ${i + 1}</span>
+                  <span class="font-bold ${c.points > 0 ? 'text-emerald-700' : 'text-red-700'}">${c.points > 0 ? '+' : ''}${c.points} pts</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
+          <button onclick="window.location.reload()" class="flex-1 px-5 py-3 bg-medical-600 hover:bg-medical-700 text-white font-semibold rounded-xl transition-colors text-sm">
+            🔄 Retry Case
+          </button>
+          <a href="/case-studies" class="flex-1 px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl border border-slate-300 transition-colors text-sm text-center">
+            📚 All Cases
+          </a>
+          <a href="/references" class="flex-1 px-5 py-3 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold rounded-xl border border-teal-200 transition-colors text-sm text-center">
+            📖 Review References
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function goToScene(sceneId: string) {
+  const scene = sceneMap.get(sceneId);
+  if (!scene) {
+    console.error('Scene not found:', sceneId);
+    return;
+  }
+  renderScene(scene);
+}
+
+function updateScoreDisplay() {
+  const el = document.getElementById('score-display');
+  if (el) el.textContent = String(currentScore);
+}
+
+function saveProgress(completed = false) {
+  const data = {
+    caseId: caseStudy.id,
+    score: currentScore,
+    choiceHistory,
+    completed,
+    timestamp: Date.now(),
+  };
+  try {
+    const existing = JSON.parse(localStorage.getItem('multipath-progress') || '{}');
+    existing[caseStudy.id] = data;
+    localStorage.setItem('multipath-progress', JSON.stringify(existing));
+  } catch {
+    // localStorage not available
+  }
+}
+
+// ── Reference accordion ────────────────────────────────────────────────
+function initAccordion() {
+  document.querySelectorAll('.ref-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = (btn as HTMLElement).dataset.target;
+      if (!targetId) return;
+      const content = document.getElementById(targetId);
+      const chevron = btn.querySelector('.ref-chevron');
+      if (content) {
+        content.classList.toggle('hidden');
+        chevron?.classList.toggle('rotate-180');
+      }
+    });
+  });
+}
+
+// ── Populate reference sidebar from inline data ────────────────────────
+async function loadReferenceData() {
+  // Drug list (abbreviated for sidebar)
+  const drugListEl = document.getElementById('drug-list');
+  if (drugListEl) {
+    const drugs = [
+      { name: 'Aspirin (ASA)', class: 'Antiplatelet', dose: '325 mg PO STAT (ACS); 81 mg daily (prophylaxis)' },
+      { name: 'Nitroglycerin', class: 'Nitrate', dose: '0.4 mg SL q5min × 3; hold if SBP < 90 or PDE-5 inhibitor use' },
+      { name: 'Morphine', class: 'Opioid', dose: '2–4 mg IV q4–6h PRN; monitor RR' },
+      { name: 'Vancomycin', class: 'Antibiotic', dose: '15–20 mg/kg IV q8–12h; infuse ≥ 60 min' },
+      { name: 'Pip-Tazo', class: 'Antibiotic', dose: '3.375–4.5 g IV q6h; check penicillin allergy' },
+      { name: 'Normal Saline', class: 'IV Fluid', dose: '30 mL/kg IV bolus (sepsis); reassess frequently' },
+      { name: 'Metoprolol', class: 'Beta-blocker', dose: '5 mg IV q5min × 3; hold if HR < 60 or SBP < 100' },
+      { name: 'Heparin', class: 'Anticoagulant', dose: '60–80 units/kg bolus; 12–18 units/kg/h infusion' },
+    ];
+    drugListEl.innerHTML = drugs
+      .map(
+        (d) => `
+      <div class="border border-slate-100 rounded-lg p-2.5 hover:border-medical-200 cursor-pointer transition-colors">
+        <div class="flex items-start justify-between gap-1">
+          <span class="text-xs font-bold text-slate-800">${d.name}</span>
+          <span class="text-xs bg-medical-50 text-medical-700 px-1.5 py-0.5 rounded flex-shrink-0">${d.class}</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">${d.dose}</p>
+        <a href="/references#drugs" class="text-xs text-medical-600 hover:underline mt-1 block">Full info →</a>
+      </div>`,
+      )
+      .join('');
+  }
+
+  // Assessment tools (abbreviated)
+  const toolListEl = document.getElementById('tool-list');
+  if (toolListEl) {
+    const tools = [
+      { name: 'SBAR', category: 'Communication', desc: 'Situation, Background, Assessment, Recommendation' },
+      { name: 'qSOFA', category: 'Sepsis', desc: 'RR ≥ 22, AMS, SBP ≤ 100 — ≥ 2 = high risk' },
+      { name: 'GCS', category: 'Neuro', desc: 'E+V+M: 3–15; ≤ 8 = severe, consider intubation' },
+      { name: 'AVPU', category: 'Neuro', desc: 'Alert / Voice / Pain / Unresponsive' },
+      { name: 'OLDCART', category: 'Pain', desc: 'Onset, Location, Duration, Characteristics, Aggravating, Relieving, Treatment' },
+      { name: '12-Lead ECG', category: 'Cardiac', desc: 'ST elevation ≥ 2 mm in V1–V4 = Anterior STEMI (LAD)' },
+      { name: 'Morse Falls', category: 'Safety', desc: '≥ 45 = high fall risk; implement prevention' },
+    ];
+    toolListEl.innerHTML = tools
+      .map(
+        (t) => `
+      <div class="border border-slate-100 rounded-lg p-2.5 hover:border-teal-200 cursor-pointer transition-colors">
+        <div class="flex items-start justify-between gap-1">
+          <span class="text-xs font-bold text-slate-800">${t.name}</span>
+          <span class="text-xs bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded flex-shrink-0">${t.category}</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">${t.desc}</p>
+        <a href="/references#tools" class="text-xs text-teal-600 hover:underline mt-1 block">Full info →</a>
+      </div>`,
+      )
+      .join('');
+  }
+}
+
+// ── Reference toggle (mobile) ─────────────────────────────────────────
+function initRefToggle() {
+  const toggleBtn = document.getElementById('ref-toggle');
+  const modal = document.getElementById('ref-modal');
+  const closeBtn = document.getElementById('ref-modal-close');
+
+  toggleBtn?.addEventListener('click', () => {
+    // On large screens, toggle sidebar visibility
+    if (window.innerWidth >= 1024) {
+      const sidebar = document.getElementById('ref-sidebar');
+      sidebar?.classList.toggle('hidden');
+    } else {
+      modal?.classList.toggle('hidden');
+    }
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    modal?.classList.add('hidden');
+  });
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+}
+
+// ── Initialize ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderVitals(currentVitals);
+  renderLabs(currentLabs);
+  renderImaging(currentImaging);
+  loadReferenceData();
+  initAccordion();
+  initRefToggle();
+
+  // Start at first scene
+  const firstScene = sceneMap.get(caseStudy.startSceneId);
+  if (firstScene) renderScene(firstScene);
+});
+</script>
+
+<style>
+  .animate-in {
+    animation: fadeSlideIn 0.3s ease-out;
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .choice-btn:hover .choice-dot {
+    background-color: rgb(14 165 233);
+  }
+</style>

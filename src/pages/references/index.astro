@@ -1,0 +1,345 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { drugReferences } from '../../data/references/drugs.js';
+import { assessmentTools, clinicalGuidelines } from '../../data/references/assessment-tools.js';
+---
+
+<Layout title="Clinical References" description="Drug references, assessment tools, and clinical guidelines for nursing students">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-2 text-sm text-slate-500 mb-2">
+      <a href="/" class="hover:text-medical-600 transition-colors">Home</a>
+      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+      </svg>
+      <span class="text-slate-700 font-medium">Clinical References</span>
+    </div>
+    <div class="flex items-start justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-800">Clinical References</h1>
+        <p class="text-slate-500 mt-1">Drug references, assessment tools, and clinical guidelines — available during case studies via the reference panel.</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="#drugs" class="px-4 py-2 bg-medical-50 text-medical-700 border border-medical-200 rounded-lg text-sm font-medium hover:bg-medical-100 transition-colors">💊 Drugs</a>
+        <a href="#tools" class="px-4 py-2 bg-teal-50 text-teal-700 border border-teal-200 rounded-lg text-sm font-medium hover:bg-teal-100 transition-colors">📋 Tools</a>
+        <a href="#guidelines" class="px-4 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors">📌 Guidelines</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+    </svg>
+    <div class="text-sm text-amber-800">
+      <strong>Educational Use Only:</strong> This reference material is provided for educational purposes within the Multipath simulation platform.
+      Always verify medication doses, guidelines, and clinical decisions against current institutional protocols, pharmacy resources, and the most recent evidence-based literature in actual clinical practice.
+    </div>
+  </div>
+
+  <!-- Drug References -->
+  <section id="drugs" class="mb-12">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl bg-medical-100 flex items-center justify-center text-xl">💊</div>
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800">Drug References</h2>
+        <p class="text-sm text-slate-500">{drugReferences.length} medications with nursing considerations</p>
+      </div>
+    </div>
+    <div class="space-y-4">
+      {drugReferences.map((drug) => (
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            class="drug-toggle w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+          >
+            <div class="flex items-center gap-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <h3 class="text-base font-bold text-slate-800">{drug.name}</h3>
+                  <span class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-medical-100 text-medical-800 border border-medical-200">
+                    {drug.class}
+                  </span>
+                </div>
+                <p class="text-sm text-slate-500 mt-0.5">{drug.genericName} — {drug.indication}</p>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-slate-400 drug-chevron transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+            </svg>
+          </button>
+          <div class="drug-content hidden border-t border-slate-100">
+            <div class="p-6 grid md:grid-cols-2 gap-6">
+              <!-- Common Doses -->
+              <div>
+                <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Common Doses / Routes</h4>
+                <div class="space-y-1.5">
+                  {drug.commonDoses.map((dose) => (
+                    <div class="text-sm text-slate-700 bg-slate-50 rounded-lg px-3 py-2 border border-slate-100">
+                      {dose}
+                    </div>
+                  ))}
+                  <div class="text-xs text-slate-500 flex flex-wrap gap-1 pt-1">
+                    <span class="font-medium">Routes:</span>
+                    {drug.route.map((r) => (
+                      <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-100">{r}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contraindications -->
+              <div>
+                <h4 class="text-xs font-semibold text-red-500 uppercase tracking-wide mb-2">⚠ Contraindications</h4>
+                <ul class="space-y-1">
+                  {drug.contraindications.map((ci) => (
+                    <li class="text-sm text-red-700 flex items-start gap-2">
+                      <span class="text-red-400 mt-0.5 flex-shrink-0">✕</span>
+                      {ci}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <!-- Side Effects -->
+              <div>
+                <h4 class="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Common Side Effects</h4>
+                <div class="flex flex-wrap gap-1.5">
+                  {drug.sideEffects.map((se) => (
+                    <span class="text-xs px-2 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg">
+                      {se}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Nursing Considerations -->
+              <div>
+                <h4 class="text-xs font-semibold text-teal-600 uppercase tracking-wide mb-2">🩺 Nursing Considerations</h4>
+                <ul class="space-y-1.5">
+                  {drug.nursingConsiderations.map((nc) => (
+                    <li class="text-sm text-slate-700 flex items-start gap-2">
+                      <span class="text-teal-400 mt-0.5 flex-shrink-0">→</span>
+                      {nc}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <!-- Monitoring -->
+              <div class="md:col-span-2 border-t border-slate-100 pt-4">
+                <h4 class="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-2">📊 Monitoring Parameters</h4>
+                <div class="flex flex-wrap gap-2">
+                  {drug.monitoring.map((m) => (
+                    <span class="text-xs px-3 py-1.5 bg-purple-50 text-purple-800 border border-purple-200 rounded-lg">
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Assessment Tools -->
+  <section id="tools" class="mb-12">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-xl">📋</div>
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800">Assessment Tools</h2>
+        <p class="text-sm text-slate-500">{assessmentTools.length} validated clinical assessment frameworks</p>
+      </div>
+    </div>
+    <div class="space-y-4">
+      {assessmentTools.map((tool) => (
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button class="tool-toggle w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+            <div>
+              <div class="flex items-center gap-3">
+                <h3 class="text-base font-bold text-slate-800">{tool.name}</h3>
+                <span class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                  {tool.category}
+                </span>
+              </div>
+              <p class="text-sm text-slate-500 mt-0.5">{tool.purpose}</p>
+            </div>
+            <svg class="w-5 h-5 text-slate-400 tool-chevron transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+            </svg>
+          </button>
+          <div class="tool-content hidden border-t border-slate-100 p-6">
+            <div class="space-y-4">
+              <!-- Components -->
+              <div>
+                <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Components</h4>
+                <div class="space-y-2">
+                  {tool.components.map((comp, i) => (
+                    <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
+                      <span class="w-7 h-7 rounded-full bg-teal-100 text-teal-700 flex-shrink-0 flex items-center justify-center text-xs font-bold">
+                        {i + 1}
+                      </span>
+                      <div>
+                        <div class="text-sm font-semibold text-slate-800">{comp.label}</div>
+                        <div class="text-sm text-slate-600 mt-0.5">{comp.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                {tool.scoring && (
+                  <div class="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                    <h4 class="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Scoring</h4>
+                    <p class="text-sm text-blue-800">{tool.scoring}</p>
+                  </div>
+                )}
+                {tool.interpretation && (
+                  <div class="bg-purple-50 rounded-lg p-3 border border-purple-100">
+                    <h4 class="text-xs font-semibold text-purple-700 uppercase tracking-wide mb-1">Interpretation</h4>
+                    <p class="text-sm text-purple-800">{tool.interpretation}</p>
+                  </div>
+                )}
+                <div class={`bg-teal-50 rounded-lg p-3 border border-teal-100 ${!tool.scoring && !tool.interpretation ? '' : 'md:col-span-2'}`}>
+                  <h4 class="text-xs font-semibold text-teal-700 uppercase tracking-wide mb-1">Clinical Application</h4>
+                  <p class="text-sm text-teal-800">{tool.clinicalUse}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Clinical Guidelines -->
+  <section id="guidelines" class="mb-12">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-xl">📌</div>
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800">Clinical Guidelines</h2>
+        <p class="text-sm text-slate-500">Key points from major clinical practice guidelines</p>
+      </div>
+    </div>
+    <div class="space-y-4">
+      {clinicalGuidelines.map((gl) => (
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800">{gl.name}</h3>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+                  {gl.category}
+                </span>
+                <span class="text-xs text-slate-400">{gl.source}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 mb-4 leading-relaxed">{gl.summary}</p>
+          <div>
+            <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Key Recommendations</h4>
+            <ul class="space-y-2">
+              {gl.keyPoints.map((kp) => (
+                <li class="flex items-start gap-2 text-sm text-slate-700">
+                  <svg class="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  {kp}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Normal Values Reference Card -->
+  <section id="normal-values" class="mb-8">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-xl">📊</div>
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800">Normal Reference Values</h2>
+        <p class="text-sm text-slate-500">Quick reference for vital signs and laboratory values</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Vital Signs -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-bold text-slate-800 mb-4">Vital Signs (Adult)</h3>
+        <div class="space-y-2 text-sm">
+          {[
+            { name: 'Temperature', value: '97.8–99.1°F (36.5–37.3°C)', alert: 'Fever: ≥ 100.4°F (38°C)' },
+            { name: 'Heart Rate', value: '60–100 bpm', alert: 'Tachy > 100 | Brady < 60' },
+            { name: 'Blood Pressure', value: 'SBP < 120, DBP < 80 mmHg', alert: 'Hypotension: SBP < 90 mmHg' },
+            { name: 'Respiratory Rate', value: '12–20 breaths/min', alert: 'Tachypnea > 20 | Bradypnea < 12' },
+            { name: 'O₂ Saturation', value: '95–100%', alert: 'Critical: < 90%' },
+            { name: 'Mean Arterial Pressure', value: '70–100 mmHg', alert: 'Sepsis goal: MAP ≥ 65 mmHg' },
+          ].map((v) => (
+            <div class="flex items-start justify-between gap-4 py-2 border-b border-slate-50 last:border-0">
+              <span class="font-medium text-slate-700">{v.name}</span>
+              <div class="text-right">
+                <div class="text-emerald-700">{v.value}</div>
+                <div class="text-xs text-amber-600">{v.alert}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Key Lab Values -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-bold text-slate-800 mb-4">Key Laboratory Values</h3>
+        <div class="space-y-2 text-sm">
+          {[
+            { name: 'WBC', value: '4.5–11.0 K/µL', alert: 'Leukocytosis > 12 | Leukopenia < 4' },
+            { name: 'Hgb (Male)', value: '13.5–17.5 g/dL', alert: 'Anemia < 13.5' },
+            { name: 'Hgb (Female)', value: '12.0–16.0 g/dL', alert: 'Anemia < 12.0' },
+            { name: 'Platelets', value: '150–400 K/µL', alert: 'Thrombocytopenia < 150' },
+            { name: 'Sodium', value: '136–145 mEq/L', alert: 'Hypo < 136 | Hyper > 145' },
+            { name: 'Potassium', value: '3.5–5.0 mEq/L', alert: 'Hypo < 3.5 | Hyper > 5.0' },
+            { name: 'Creatinine (M)', value: '0.7–1.3 mg/dL', alert: 'Elevated → AKI concern' },
+            { name: 'BUN', value: '7–25 mg/dL', alert: 'BUN:Cr ratio > 20 → pre-renal' },
+            { name: 'Lactate', value: '0.5–2.2 mmol/L', alert: '> 2 = sepsis concern; > 4 = shock' },
+            { name: 'Troponin I', value: '< 0.04 ng/mL', alert: '> 0.04 = myocardial injury' },
+            { name: 'INR (therapeutic)', value: '2.0–3.0', alert: '> 3.0 = bleeding risk' },
+            { name: 'aPTT', value: '25–35 seconds', alert: 'Heparin therapeutic: 60–100 sec' },
+          ].map((v) => (
+            <div class="flex items-start justify-between gap-4 py-2 border-b border-slate-50 last:border-0">
+              <span class="font-medium text-slate-700">{v.name}</span>
+              <div class="text-right">
+                <div class="text-emerald-700">{v.value}</div>
+                <div class="text-xs text-amber-600">{v.alert}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Drug accordion
+  document.querySelectorAll('.drug-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling as HTMLElement;
+      const chevron = btn.querySelector('.drug-chevron') as HTMLElement;
+      content?.classList.toggle('hidden');
+      chevron?.classList.toggle('rotate-180');
+    });
+  });
+
+  // Tool accordion
+  document.querySelectorAll('.tool-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling as HTMLElement;
+      const chevron = btn.querySelector('.tool-chevron') as HTMLElement;
+      content?.classList.toggle('hidden');
+      chevron?.classList.toggle('rotate-180');
+    });
+  });
+</script>
