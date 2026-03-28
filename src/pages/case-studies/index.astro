@@ -74,7 +74,7 @@ import { allCaseStudies } from '../../data/case-studies/index.js';
 <script>
   // Show saved progress badges
   try {
-    const saved = JSON.parse(localStorage.getItem('nursecase-progress') || '{}');
+    const saved = JSON.parse(localStorage.getItem('multipath-progress') || '{}');
     for (const [caseId, data] of Object.entries(saved as Record<string, {completed: boolean, score: number}>)) {
       if (data.completed) {
         const links = document.querySelectorAll(`a[href="/case-studies/${caseId}"]`);

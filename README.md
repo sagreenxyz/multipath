@@ -1,4 +1,4 @@
-# NurseCase — Multi-Path Clinical Training Platform
+# Multipath — Multi-Path Clinical Training Platform
 
 An interactive Astro.build website for nursing student training through complex, multi-path unfolding case studies. Students take on the role of the nurse in realistic clinical scenarios and make decisions that shape patient outcomes.
 
@@ -13,8 +13,9 @@ An interactive Astro.build website for nursing student training through complex,
 
 ## Case Studies
 
-1. **A Cascade of Complications** (Intermediate) — Sepsis in an elderly patient with UTI
-2. **When Every Minute Counts** (Advanced) — Acute coronary syndrome / STEMI
+1. **The Long Road** (Advanced) — Managing progressive chronic kidney disease (hyperkalemia, fluid overload, dialysis decision, patient education)
+2. **A Cascade of Complications** (Intermediate) — Sepsis in an elderly patient with UTI
+3. **When Every Minute Counts** (Advanced) — Acute coronary syndrome / STEMI
 
 ## Tech Stack
 
@@ -22,7 +23,7 @@ An interactive Astro.build website for nursing student training through complex,
 - [Tailwind CSS](https://tailwindcss.com) for styling
 - Vanilla JavaScript for the case study engine (no framework required)
 - Case studies defined as TypeScript data files
-- LocalStorage for progress tracking
+- LocalStorage for progress tracking (`multipath-progress`)
 - Fully static — no backend required
 
 ## Getting Started
@@ -58,7 +59,7 @@ src/
 - **Constructivist learning**: Students build knowledge through active decision-making
 - **Clinical reasoning development**: Unfolding scenarios develop diagnostic thinking patterns
 - **Safe failure environment**: Mistakes are learning opportunities; retry and explore all paths
-- **Evidence-based content**: Aligned with Surviving Sepsis Campaign, AHA/ACC guidelines
+- **Evidence-based content**: Aligned with CKD clinical practice guidelines, Surviving Sepsis Campaign, AHA/ACC guidelines
 
 ---
 

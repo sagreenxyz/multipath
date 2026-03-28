@@ -318,7 +318,7 @@ const caseStudyJSON = JSON.stringify(caseStudy);
 
 <script>
 // =====================================================================
-// NurseCase Engine — Client-side case study runtime
+// Multipath Engine — Client-side case study runtime
 // =====================================================================
 
 interface Vitals {
@@ -877,9 +877,9 @@ function saveProgress(completed = false) {
     timestamp: Date.now(),
   };
   try {
-    const existing = JSON.parse(localStorage.getItem('nursecase-progress') || '{}');
+    const existing = JSON.parse(localStorage.getItem('multipath-progress') || '{}');
     existing[caseStudy.id] = data;
-    localStorage.setItem('nursecase-progress', JSON.stringify(existing));
+    localStorage.setItem('multipath-progress', JSON.stringify(existing));
   } catch {
     // localStorage not available
   }
