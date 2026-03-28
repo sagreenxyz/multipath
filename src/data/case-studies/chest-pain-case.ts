@@ -120,6 +120,14 @@ export const chestPainCase: CaseStudy = {
         '📊 ECG Interpretation:\n• ST elevation ≥ 2 mm in V1–V4 = Anterior STEMI\n• V1–V4 territory = Left Anterior Descending (LAD) coronary artery occlusion\n• "The Widow Maker" — LAD occlusion carries high mortality\n• Reciprocal changes in inferior leads (II, III, aVF) confirm STEMI\n• Forming Q waves = irreversible necrosis beginning',
       scoreBonus: 10,
       nextSceneId: 'cp-scene-4-stemi-activation',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'cp-nd-1',
+            evaluation: 'ECG confirms anterior STEMI: ST elevation 2–3 mm V1–V4, reciprocal changes in II/III/aVF. STEMI protocol activated. Cath lab notification initiated. D2B clock running.',
+          },
+        ],
+      },
     },
     {
       id: 'cp-scene-3-wait-danger',
@@ -216,6 +224,14 @@ export const chestPainCase: CaseStudy = {
           rationale: 'There is no safe dose of nitroglycerin when a PDE-5 inhibitor has been taken within 24 hours. The mechanism involves additive vasodilation that is not mitigated by dose reduction. Always notify the physician for alternative pain management.',
         },
       ],
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'cp-nd-4',
+            evaluation: 'Critical allergy/interaction identified: sildenafil taken ~18 hours prior — nitroglycerin absolutely contraindicated. Physician notified. Medication reconciliation performed.',
+          },
+        ],
+      },
     },
     {
       id: 'cp-scene-6-nitro-hold-correct',
@@ -228,6 +244,22 @@ export const chestPainCase: CaseStudy = {
         '🔴 Drug Interaction Alert:\nSildenafil (Viagra) + Nitroglycerin = Severe, refractory hypotension (absolute contraindication)\n• Sildenafil half-life: ~4 hours | Clinical effect: up to 24 hours\n• Tadalafil (Cialis): hold nitrates for 48 hours\n• Always ask about PDE-5 inhibitor use during ACS assessment\n• Document your intervention and the clinical rationale',
       scoreBonus: 20,
       nextSceneId: 'cp-scene-7-cath-lab',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'cp-nd-2',
+            evaluation: 'Pain 6/10 after morphine 4 mg IV. Nitroglycerin withheld (sildenafil interaction). Aspirin 325 mg given. Continuing pain assessment q15 min.',
+          },
+          {
+            id: 'cp-nd-3',
+            evaluation: 'Patient anxiety partially reduced with therapeutic communication and clear explanation of plan. Husband notified. Patient cooperative with procedures.',
+          },
+          {
+            id: 'cp-nd-4',
+            evaluation: 'Heparin bolus administered per weight-based protocol. Baseline aPTT obtained. IV sites assessed — no active bleeding. Cath lab team notified of anticoagulation.',
+          },
+        ],
+      },
     },
     {
       id: 'cp-scene-6-nitro-error',
@@ -300,6 +332,23 @@ export const chestPainCase: CaseStudy = {
         '🏆 Excellence Demonstrated:\n• Recognized STEMI presentation and triaged correctly\n• Obtained 12-lead ECG within 5 minutes of arrival (benchmark: ≤ 10 min)\n• Caught critical drug interaction (sildenafil + nitroglycerin)\n• Communicated therapeutically with patient and family under pressure\n• D2B time: 82 minutes (benchmark: < 90 min)',
       feedback:
         'Exceptional performance! Your rapid triage, ECG acquisition, critical medication safety catch, and compassionate communication represent expert emergency cardiac nursing. Your actions directly contributed to myocardial salvage and a positive patient outcome.',
+      carePlanUpdate: {
+        resolveDiagnoses: ['cp-nd-2', 'cp-nd-3'],
+        updateDiagnoses: [
+          {
+            id: 'cp-nd-1',
+            evaluation: 'Successful primary PCI — TIMI 3 flow restored in proximal LAD. Drug-eluting stent placed. Ejection fraction 45%. ST elevation resolved on post-procedural ECG. D2B: 82 minutes (within benchmark). Patient transferred to Cardiac ICU.',
+          },
+          {
+            id: 'cp-nd-4',
+            evaluation: 'Post-PCI access site hemostasis maintained per cath lab protocol. No hematoma, pulsatile mass, or neurovascular compromise. Heparin infusion per protocol. aPTT monitoring in progress.',
+          },
+          {
+            id: 'cp-nd-5',
+            evaluation: 'Initial discharge education initiated — STEMI diagnosis acknowledged, smoking cessation referral accepted. DAPT education and cardiac rehab referral to be completed prior to discharge.',
+          },
+        ],
+      },
     },
     {
       id: 'cp-scene-8-family-left',

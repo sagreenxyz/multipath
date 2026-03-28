@@ -222,6 +222,18 @@ export const sepsisCase: CaseStudy = {
         '💊 Vancomycin Note: Vancomycin must be infused at a rate ≤ 10–15 mg/min (or over ≥ 60 minutes) to prevent red-man syndrome (flushing, erythema, hypotension). For this patient\'s dose of 1,230 mg, a 90-minute infusion is appropriate.',
       scoreBonus: 20,
       nextSceneId: 'scene-7-reassessment',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'sep-nd-1',
+            evaluation: 'BP improving to 100/62 mmHg; SpO₂ 97% on 2L NC; fluid bolus and antibiotics infusing. Tissue perfusion improving — continue monitoring MAP and urine output.',
+          },
+          {
+            id: 'sep-nd-2',
+            evaluation: 'Temperature 103.1°F persisting; antipyretics administered. Trending to be reassessed at 2-hour mark.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-6-student-pharmacy',
@@ -266,6 +278,22 @@ export const sepsisCase: CaseStudy = {
       clinicalNote:
         '📊 Monitoring Goals in Sepsis:\n• Lactate clearance: ≥ 10% decrease every 2 hours\n• Urine output: ≥ 0.5 mL/kg/h (target = 41 mL/h for 82 kg)\n• MAP: ≥ 65 mmHg\n• Mental status: improvement\n\nMr. Simmons shows improvement but urine output remains subtherapeutic.',
       nextSceneId: 'scene-8-urine-decision',
+      carePlanUpdate: {
+        updateDiagnoses: [
+          {
+            id: 'sep-nd-1',
+            evaluation: 'Lactate trending down to 2.4 mmol/L (from 3.8); BP 104/66 mmHg; HR 102. Goal-directed therapy showing response. Urine output subtherapeutic at 0.4 mL/kg/h — fluid challenge under consideration.',
+          },
+          {
+            id: 'sep-nd-2',
+            evaluation: 'Temperature 101.8°F — trending downward from 103.1°F. Antipyretic therapy effective. Continue monitoring.',
+          },
+          {
+            id: 'sep-nd-3',
+            evaluation: 'Mental status improving — patient now knows name and "in the hospital"; still confused about date. GCS improving. Continue reorientation and fall precautions.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-8-urine-decision',
@@ -316,6 +344,23 @@ export const sepsisCase: CaseStudy = {
         '🏆 Key Successes in This Case:\n• Early recognition using qSOFA criteria\n• Prompt physician notification with structured SBAR\n• Timely initiation of Hour-1 Sepsis Bundle\n• Safe medication administration with allergy awareness\n• Ongoing reassessment and appropriate escalation\n• Clear communication with patient and family',
       feedback:
         'Excellent work! You demonstrated expert-level nursing practice in sepsis recognition, communication, and evidence-based bundle implementation. Your quick escalation and systematic approach directly improved patient outcomes.',
+      carePlanUpdate: {
+        resolveDiagnoses: ['sep-nd-2'],
+        updateDiagnoses: [
+          {
+            id: 'sep-nd-1',
+            evaluation: 'Hemodynamic stability achieved: BP 110/70 mmHg, HR stable. Lactate 1.2 mmol/L (normal). Urine output improved to 0.6 mL/kg/h. Tissue perfusion goals met.',
+          },
+          {
+            id: 'sep-nd-3',
+            evaluation: 'Patient alert and oriented × person, place, time. Mental status returned to baseline. Diagnosis goals achieved — discharge education initiated.',
+          },
+          {
+            id: 'sep-nd-5',
+            evaluation: 'Wife verbalized understanding of treatment plan. Discharge education regarding sepsis, UTI prevention, and warning signs initiated. Case management referral placed.',
+          },
+        ],
+      },
     },
     {
       id: 'scene-9-lasix-error',
