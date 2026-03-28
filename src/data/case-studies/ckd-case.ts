@@ -607,7 +607,7 @@ export const ckdCase: CaseStudy = {
       {
         id: 'ckd-nd-2',
         priority: 2,
-        label: 'Risk for Electrolyte Imbalance — Hyperkalemia',
+        label: 'Risk for Electrolyte Imbalance',
         relatedTo: 'decreased renal potassium excretion secondary to ESRD (eGFR 9 mL/min/1.73m²)',
         evidencedBy: [
           'Potassium 6.4 mEq/L (critical high)',

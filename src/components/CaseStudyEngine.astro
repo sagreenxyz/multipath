@@ -707,8 +707,10 @@ function renderDiagnosisHtml(dx: NursingDiagnosis, isOpen: boolean): string {
       <!-- Diagnosis header (accordion toggle) -->
       <button
         type="button"
-        class="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        onclick="(function(btn){const body=document.getElementById('dx-body-${dx.id}');if(body){body.classList.toggle('hidden');const chevron=btn.querySelector('.cp-chevron');if(chevron)chevron.classList.toggle('rotate-180');}})(this)"
+        class="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cp-dx-toggle"
+        data-dx-id="${dx.id}"
+        aria-expanded="${isOpen}"
+        aria-controls="dx-body-${dx.id}"
       >
         <div class="${st.headerBg} px-4 py-3 flex items-center gap-3">
           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-extrabold text-sm">${dx.priority}</div>
@@ -770,6 +772,22 @@ function renderDiagnosisHtml(dx: NursingDiagnosis, isOpen: boolean): string {
     </div>`;
 }
 
+function toggleDiagnosisAccordion(btn: HTMLButtonElement) {
+  const dxId = btn.dataset.dxId;
+  if (!dxId) return;
+  const body = document.getElementById(`dx-body-${dxId}`);
+  if (!body) return;
+
+  const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+  const nowExpanded = !isExpanded;
+
+  body.classList.toggle('hidden', !nowExpanded);
+  btn.setAttribute('aria-expanded', String(nowExpanded));
+
+  const chevron = btn.querySelector<SVGElement>('.cp-chevron');
+  if (chevron) chevron.classList.toggle('rotate-180', nowExpanded);
+}
+
 function renderCarePlan() {
   const emptyEl = document.getElementById('care-plan-empty');
   const contentEl = document.getElementById('care-plan-content');
@@ -789,6 +807,11 @@ function renderCarePlan() {
   // First diagnosis open by default, rest closed
   diagnosesEl.innerHTML = sorted.map((dx, i) => renderDiagnosisHtml(dx, i === 0)).join('');
 
+  // Attach event delegation for diagnosis accordion toggles
+  diagnosesEl.querySelectorAll<HTMLButtonElement>('.cp-dx-toggle').forEach(btn => {
+    btn.addEventListener('click', () => toggleDiagnosisAccordion(btn));
+  });
+
   // Update badge count
   const active = currentCarePlan.filter(d => d.status !== 'resolved').length;
   const badge = document.getElementById('care-plan-badge');
@@ -800,7 +823,7 @@ function renderCarePlan() {
 
 function applyCarePlanUpdate(update: CarePlanUpdate) {
   if (update.addDiagnoses?.length) {
-    const newDxs = update.addDiagnoses.map(d => ({ ...d, status: 'new' as const }));
+    const newDxs = update.addDiagnoses.map(d => ({ ...d, status: (d.status ?? 'new') as NursingDiagnosis['status'] }));
     currentCarePlan = [...currentCarePlan, ...newDxs];
   }
   if (update.resolveDiagnoses?.length) {
@@ -811,7 +834,7 @@ function applyCarePlanUpdate(update: CarePlanUpdate) {
   if (update.updateDiagnoses?.length) {
     for (const patch of update.updateDiagnoses) {
       currentCarePlan = currentCarePlan.map(d =>
-        d.id === patch.id ? { ...d, ...patch, status: patch.status ?? ('new' as const) } : d
+        d.id === patch.id ? { ...d, ...patch, status: (patch.status ?? 'new') as NursingDiagnosis['status'] } : d
       );
     }
   }

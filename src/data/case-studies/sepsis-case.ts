@@ -368,7 +368,7 @@ export const sepsisCase: CaseStudy = {
           'Alert and oriented ×4 at time of transfer to floor',
         ],
         interventions: [
-          { action: 'Administer IV crystalloid fluid resuscitation: 30 mL/kg NS bolus (approx. 2,460 mL for 82 kg patient)', rationale: 'Surviving Sepsis Campaign Hour-1 Bundle mandates early aggressive fluid resuscitation to restore intravascular volume and improve perfusion pressure', frequency: 'Initiate immediately; reassess after each 500 mL bolus' },
+          { action: 'Administer IV crystalloid fluid resuscitation: 30 mL/kg NS bolus (weight-based dose per protocol)', rationale: 'Surviving Sepsis Campaign Hour-1 Bundle mandates early aggressive fluid resuscitation to restore intravascular volume and improve perfusion pressure', frequency: 'Initiate immediately; reassess after each 500 mL bolus' },
           { action: 'Obtain stat blood cultures × 2 sets (peripheral + central if available) before first antibiotic dose', rationale: 'Cultures must be drawn before antibiotics to maximize pathogen identification and guide de-escalation therapy', frequency: 'Once, before antibiotic administration' },
           { action: 'Initiate broad-spectrum antibiotics per sepsis protocol (e.g., Pip-Tazo 4.5 g IV)', rationale: 'Early antibiotic therapy (< 1 hour) significantly reduces mortality in sepsis; each hour of delay increases mortality by ~7%', frequency: 'Administer within 1 hour of sepsis recognition' },
           { action: 'Apply supplemental oxygen; target SpO₂ ≥ 95%', rationale: 'Optimizing arterial oxygen content supports tissue oxygen delivery in the setting of impaired perfusion', frequency: 'Continuous; titrate O₂ device to maintain SpO₂ goal' },
