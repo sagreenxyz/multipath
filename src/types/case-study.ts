@@ -55,6 +55,41 @@ export interface Choice {
   rationale?: string;
 }
 
+// ── Nursing Care Plan ─────────────────────────────────────────────────
+
+export interface NursingIntervention {
+  action: string;
+  rationale: string;
+  frequency?: string;
+}
+
+export type DiagnosisStatus = 'active' | 'resolved' | 'new';
+
+export interface NursingDiagnosis {
+  id: string;
+  priority: number;
+  label: string;            // NANDA nursing diagnosis statement
+  relatedTo: string;        // Etiology / related factors (r/t)
+  evidencedBy: string[];    // Defining characteristics (AEB)
+  shortTermGoals: string[]; // SMART goals — end of shift
+  longTermGoals: string[];  // SMART goals — discharge / follow-up
+  interventions: NursingIntervention[];
+  evaluation?: string;      // Outcome evaluation (populated as case evolves)
+  status?: DiagnosisStatus;
+}
+
+export interface CarePlan {
+  diagnoses: NursingDiagnosis[];
+}
+
+export interface CarePlanUpdate {
+  addDiagnoses?: NursingDiagnosis[];
+  updateDiagnoses?: (Partial<NursingDiagnosis> & { id: string })[];
+  resolveDiagnoses?: string[];  // IDs of diagnoses to mark resolved
+}
+
+// ─────────────────────────────────────────────────────────────────────
+
 export interface Scene {
   id: string;
   type: SceneType;
@@ -70,6 +105,7 @@ export interface Scene {
   endType?: EndType;
   scoreBonus?: number;         // Bonus points for reaching this scene
   timeElapsed?: number;        // Minutes elapsed in scenario
+  carePlanUpdate?: CarePlanUpdate; // Evolves the care plan at this scene
 }
 
 export interface LearningObjective {
@@ -92,4 +128,6 @@ export interface CaseStudy {
   scenes: Scene[];
   startSceneId: string;
   maxScore: number;
+  carePlan?: CarePlan;    // Initial nursing care plan (evolves through scenes)
 }
+
