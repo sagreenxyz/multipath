@@ -8,7 +8,7 @@ import { allCaseStudies } from '../../data/case-studies/index.js';
   <!-- Page header -->
   <div class="mb-8">
     <div class="flex items-center gap-2 text-sm text-slate-500 mb-2">
-      <a href="/" class="hover:text-medical-600 transition-colors">Home</a>
+      <a href={import.meta.env.BASE_URL} class="hover:text-medical-600 transition-colors">Home</a>
       <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
       </svg>
@@ -77,7 +77,7 @@ import { allCaseStudies } from '../../data/case-studies/index.js';
     const saved = JSON.parse(localStorage.getItem('multipath-progress') || '{}');
     for (const [caseId, data] of Object.entries(saved as Record<string, {completed: boolean, score: number}>)) {
       if (data.completed) {
-        const links = document.querySelectorAll(`a[href="/case-studies/${caseId}"]`);
+        const links = document.querySelectorAll(`a[href="${import.meta.env.BASE_URL}/case-studies/${caseId}"]`);
         links.forEach(link => {
           const badge = document.createElement('span');
           badge.className = 'ml-2 text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200 font-medium';
